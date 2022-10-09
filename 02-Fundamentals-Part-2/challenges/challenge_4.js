@@ -53,22 +53,21 @@ length of the array (because that's the number of elements)
 let bills = [22, 295, 176, 440, 37, 105, 10, 1100, 86, 52];
 let tips = [];
 let totals = [];
-const calcTip = (bill) => (50 <= bill && bill <= 300) ? bill * 0.15 : bill * 0.2;
+const calcTip = (bill) => 50 <= bill && bill <= 300 ? bill * 0.15 : bill * 0.2;
 
-bills.forEach(bill => {
+bills.forEach((bill) => {
     let tip = calcTip(bill);
     tips.push(tip);
     totals.push(bill + tip);
-})
+});
 
 const calcAverage = (arr) => {
     let sum = arr.reduce((sum, x) => sum + x);
     return sum / arr.length;
-}
+};
 
 console.log(`The bills were ${bills},
 the tips were ${tips},
 the total values were ${totals}`);
 
 console.log(calcAverage(totals));
-
