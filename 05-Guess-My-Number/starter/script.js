@@ -2,24 +2,63 @@
 
 const numInput = document.querySelector('.guess');
 const checkButton = document.querySelector('.check');
+const againButton = document.querySelector('.again');
 const secretNumberHTML = document.querySelector('.number');
 const scoreHTML = document.querySelector('.score');
 const highScoreHTML = document.querySelector('.highscore');
 const messageHTML = document.querySelector('.message');
 
-// When the Enter is pressed
+let secretNumber = Math.trunc(Math.random() * 20 + 1);
+let highScore = 0;
+let score = 20;
+
+const updateScore = () => {
+    score--;
+    scoreHTML.textContent = score;
+}
+
+const updateHighScore = () => {
+    if (highScore < score) {
+        highScore = score;
+        highScoreHTML.textContent = highScore;
+    }
+}
+
+/**
+ * @param {string} bgColor
+ * @param {string} secretNumberWidth
+ */
+const changeStyle = (bgColor, secretNumberWidth) => {
+    document.querySelector('body').style.backgroundColor = bgColor;
+    document.querySelector('.number').style.width = secretNumberWidth;
+}
+
+// Again button
+againButton.addEventListener('click', () => {
+    secretNumber = Math.trunc(Math.random() * 20 + 1);
+    secretNumberHTML.textContent = '?';
+    score = 20;
+    scoreHTML.textContent = score;
+    messageHTML.textContent = 'Start guessing...';
+    numInput.value = '';
+    changeStyle('#222', '15rem');
+    numInput.disabled = false;
+    checkButton.disabled = false;
+});
+
+// Enter or Space
 numInput.addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault();
         checkButton.click();
     }
 });
-
-let secretNumber = Math.trunc(Math.random() * 20 + 1);
-let highScore = 0;
-let score = 20;
-
-console.log(secretNumber)
+document.addEventListener('keypress', (event) => {
+    if (event.key === ' ') {
+        event.preventDefault();
+        againButton.click();
+    }
+})
 
 const checkGuessedNumber = () => {
     let guessedNumber = numInput.value;
@@ -29,31 +68,22 @@ const checkGuessedNumber = () => {
     } else if (score > 1) {
         // range check
         if (+guessedNumber < 1 || +guessedNumber > 20) {
-            score--;
-            scoreHTML.textContent = String(score);
+            updateScore();
             messageHTML.textContent = `Between 1 and 20 (-_-)`;
-
         }
         // winning
         else if (+guessedNumber === secretNumber) {
-            secretNumberHTML.textContent = String(secretNumber);
-            highScore = score;
-            highScoreHTML.textContent = String(highScore);
+            secretNumberHTML.textContent = secretNumber;
+            updateHighScore();
             messageHTML.textContent = `Correct! (^_^)`;
-            document.querySelector('body').style.backgroundColor = '#60b347';
-            document.querySelector('.number').style.width = '30rem';
+            changeStyle('#0c4502', '30rem');
+            numInput.disabled = true;
+            checkButton.disabled = true;
         }
-        // greater than secret
-        else if (+guessedNumber > secretNumber) {
-            score--;
-            scoreHTML.textContent = String(score);
-            messageHTML.textContent = `Too high! (~_~)`;
-        }
-        // lower than secretNumber
-        else if (+guessedNumber < secretNumber) {
-            score--;
-            scoreHTML.textContent = String(score);
-            messageHTML.textContent = `Too low! (~_~)`;
+        // wrong answer
+        else {
+            updateScore();
+            messageHTML.textContent = +guessedNumber > secretNumber ? `Too high! (~_~)` : `Too low! (~_~)`;
         }
     }
     // losing
@@ -64,15 +94,6 @@ const checkGuessedNumber = () => {
 }
 
 checkButton.onclick = checkGuessedNumber;
-
-/*
-TODO:
-    - Changing the range ?
-    - Winning - blocking everything except again button
-    - Split up into functions
-    - Score update
-    - Again button
- */
 
 
 

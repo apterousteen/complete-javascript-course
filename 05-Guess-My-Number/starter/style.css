@@ -16,7 +16,6 @@ body {
     font-family: 'Press Start 2P', sans-serif;
     color: #eee;
     background-color: #222;
-    /* background-color: #60b347; */
 }
 
 /* LAYOUT */
@@ -74,8 +73,15 @@ h1 {
 .between {
     font-size: 1.4rem;
     position: absolute;
-    top: 3rem;
+    top: 2rem;
     right: 2rem;
+    width: 50%;
+    line-height: 2rem;
+    text-align: end;
+}
+
+.between > span {
+    color: #fdc322;
 }
 
 .again {
@@ -107,8 +113,14 @@ h1 {
     cursor: pointer;
 }
 
-.btn:hover {
+.btn:hover:enabled {
     background-color: #fdc322;
+}
+
+button:disabled {
+    border: 1px solid #fdc322;
+    background-color: #0c4502;
+    color: #eeeeee;
 }
 
 .message {
