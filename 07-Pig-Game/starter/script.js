@@ -111,7 +111,7 @@ const finishGame = () => {
 const holdScore = () => {
     currPlayer.score += currPlayer.currScore;
     currPlayer.scoreHTML.textContent = currPlayer.score;
-    if (currPlayer.score >= 10) {
+    if (currPlayer.score >= 100) {
         finishGame();
     } else {
         switchPlayer();
