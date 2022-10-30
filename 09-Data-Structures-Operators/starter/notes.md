@@ -401,3 +401,170 @@ if owner exists, then assign this value, else - don't do anything
 rest1.owner &&= '<ANONYMOUS>';
 rest2.owner &&= '<ANONYMOUS>'; // <ANONYMOUS>
 ```
+
+# The for-of Loop
+
+```javascript
+const menu = [...restaurant.starterMenu, ...restaurant.mainMenu];
+
+for (const item of menu) console.log(item);
+```
+
+## getting indexes in for-of
+
+```javascript
+// we destructure the item = [index, element]
+for (const [i, el] of menu.entries()) {
+    console.log(`${i + 1}: ${el}`);
+}
+```
+
+# Enhanced object literals
+
+## we can compute property names
+
+```javascript
+let weekends = ['sat', 'sun'];
+
+let openingHours = {
+    thu: {
+        open: 12,
+        close: 22,
+    },
+    //computed
+    [`day-${2 + 3}`]: {
+        open: 11,
+        close: 23,
+    },
+    //computed
+    [weekends[1]]: {
+        open: 0, // Open 24 hours
+        close: 24,
+    },
+};
+```
+
+## just add the name of outer object to set this property
+
+```javascript
+const restaurant = {
+    name: 'Classico Italiano',
+    location: 'Via Angelo Tavanti 23, Firenze, Italy',
+
+    // HERE
+    openingHours,
+};
+```
+
+## methods
+
+```javascript
+const restaurant = {
+    // methods, old way
+    order: function (starterIndex, mainIndex) {
+        return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
+    },
+
+    // methods, new way
+    orderNew(starterIndex, mainIndex) {
+        return [this.starterMenu[starterIndex], this.mainMenu[mainIndex]];
+    },
+}
+```
+
+# Optional Chaining
+
+Operator ?. checks if property / method / element exists (not null or undefined)
+
+## Properties
+
+```javascript
+// will try to get open only if mon property exists
+// else - returns undefined
+console.log(restaurant.openingHours.mon?.open); // undefined
+```
+
+```javascript
+// check if restaurant is open
+const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+
+for (const day of days) {
+    let openHour = restaurant.openingHours[day]?.open ?? 'is closed';
+    console.log(`on ${day} this restaurant ${typeof openHour === 'number' ? `opens at ${openHour}` : openHour}`);
+}
+```
+
+## Methods
+
+```javascript
+console.log(restaurant.orderRisotto?.(0, 1) ?? 'Method does not exist');
+```
+
+## Arrays
+
+```javascript
+const users = [{name: 'Jonas', email: 'hello@jonas.io'}];
+console.log(users[0]?.name ?? 'User array empty'); // Jonas
+
+
+const users = [];
+console.log(users[0]?.name ?? 'User array empty'); // User array empty
+```
+
+# Looping Objects: Object Keys, Values, and Entries
+
+## Property NAMES
+
+```javascript
+const properties = Object.keys(openingHours); // [ 'thu', 'fri', 'sat' ]
+```
+
+## Amount of properties, loop
+
+```javascript
+let openStr = `we are open ${properties.length} days a week: `;
+for (const day of properties) {
+    openStr += `${day}, `;
+}
+console.log(openStr); //we are open 3 days a week: thu, fri, sat,
+```
+
+## Property VALUES
+
+```javascript
+const values = Object.values(openingHours);
+console.log(values);
+/*
+
+[
+    { open: 12, close: 22 },
+    { open: 11, close: 23 },
+    { open: 0, close: 24 }
+]
+
+*/
+```
+
+## Entire object PROPERTIES
+
+```javascript
+const entries = Object.entries(openingHours);
+console.log(entries);
+/*
+
+[
+  [ 'thu', { open: 12, close: 22 } ],
+  [ 'fri', { open: 11, close: 23 } ],
+  [ 'sat', { open: 0, close: 24 } ]
+]
+
+ */
+```
+
+## Destructuring a whole entry AND the value object
+
+```javascript
+for (const [key, {open, close}] of entries) {
+    console.log(`on ${key} we open at ${open} and close at ${close}`)
+}
+```
