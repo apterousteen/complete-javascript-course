@@ -568,3 +568,203 @@ for (const [key, {open, close}] of entries) {
     console.log(`on ${key} we open at ${open} and close at ${close}`)
 }
 ```
+
+# Sets
+
+- **a collection of unique values**
+
+## Array as an argument
+
+```javascript
+const ordersSet = new Set([
+    'Pasta',
+    'Pizza',
+    'Pizza',
+    'Risotto',
+    'Pasta',
+    'Pizza',
+]);
+console.log(ordersSet); // Set(3) { 'Pasta', 'Pizza', 'Risotto' }
+```
+
+## String as an argument
+
+- unique chars
+
+```javascript
+console.log(new Set('Jonassss')); // Set(5) { 'J', 'o', 'n', 'a', 's' }
+```
+
+## Set methods
+
+```javascript
+// Set(3) { 'Pasta', 'Pizza', 'Risotto' }
+
+ordersSet.size; // 3
+ordersSet.has('Pizza'); // true
+ordersSet.has('Bread'); // false
+ordersSet.add('Wine'); // Set(4) { 'Pasta', 'Pizza', 'Risotto', 'Wine'}
+ordersSet.delete('Risotto'); // Set(3) { 'Pasta', 'Pizza', 'Wine' }
+ordersSet.clear(); // Set(0) {}
+```
+
+## There's no way of retrieving values from a set
+
+## Loop through the Set (only FOR OF or forEach)
+
+```javascript
+for (let order of ordersSet)
+    console.log(order);
+// Pasta
+// Pizza
+// Wine
+
+ordersSet.forEach(x => console.log(x));
+// Pasta
+// Pizza
+// Wine
+
+for (let i = 0; i < ordersSet.size; i++) {
+    console.log(ordersSet[i]);
+}
+// undefined
+// undefined
+// undefined
+```
+
+## Array without duplicates
+
+```javascript
+const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
+const staffUnique = [...new Set(staff)];
+// [ 'Waiter', 'Chef', 'Manager' ]
+```
+
+## Amount of unique elements
+
+```javascript
+const staff = ['Waiter', 'Chef', 'Waiter', 'Manager', 'Chef', 'Waiter'];
+console.log(new Set(staff).size); // 3
+```
+
+# Maps
+
+- **a dictionary with keys of any type**
+- **in Objects the keys are always strings**
+
+```javascript
+const cafe = new Map();
+cafe.set('name', 'Maido cafe');
+console.log(cafe); // Map(1) { 'name' => 'Maido cafe' }
+```
+
+## Map methods
+
+```javascript
+cafe.set(1, 'Tokyo')
+    .set(2, 'Hokkaido')
+    .set('open', 11)
+    .set('close', 23);
+console.log(cafe);
+
+/*
+
+Map(5) {
+  'name' => 'Maido cafe',
+  1 => 'Tokyo',
+  2 => 'Hokkaido',
+  'open' => 11,
+  'close' => 23
+}
+
+*/
+```
+
+```javascript
+cafe.get(2); // Hokkaido
+cafe.get('open'); // 11
+```
+
+```javascript
+cafe.has('name'); // true
+cafe.delete(2);
+/*
+Map(4) {
+    'name' => 'Maido cafe',
+    1 => 'Tokyo',
+    'open' => 11,
+    'close' => 23
+}
+*/
+
+cafe.size; // 4
+cafe.clear(); // Map(0) {}
+```
+
+## Objects as keys
+
+```javascript
+const domElements = new Map();
+domElements.set(document.querySelector('h1'), 'Heading');
+console.log(domElements); // Map(1) { h1 => 'Heading' }
+```
+
+## Convert Object to Map
+
+```javascript
+const hoursMap = new Map(Object.entries(openingHours));
+```
+
+## Alternative way of creating a Map (array of arrays)
+
+```javascript
+const question = new Map([
+    ['question', 'What is the best programming language in the world?'],
+    [1, 'C'],
+    [2, 'Java'],
+    [3, 'JavaScript'],
+    ['correct', 3],
+    [true, 'Correct 🎉'],
+    [false, 'Try again!'],
+]);
+```
+
+## Loop through a Map
+
+```javascript
+console.log(question.get('question'));
+
+for (const [key, value] of question) {
+    if (typeof key === 'number') {
+        console.log(`${key}) ${value}`);
+    }
+}
+
+/*
+
+What is the best programming language in the world?
+1) C
+2) Java
+3) JavaScript
+
+*/
+```
+
+## Use case of a Boolean key
+
+```javascript
+const answer = +prompt('Type 1, 2 or 3');
+alert(question.get(answer === question.get('correct')));
+```
+
+## Convert Map to Array
+
+```javascript
+console.log([...question]);
+console.log([...question.keys()]);
+console.log([...question.values()]);
+```
+
+# Choosing a data structure
+
+![img_2.png](img_2.png)
