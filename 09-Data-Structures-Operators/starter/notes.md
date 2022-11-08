@@ -768,3 +768,188 @@ console.log([...question.values()]);
 # Choosing a data structure
 
 ![img_2.png](img_2.png)
+
+# Boxing (Упаковка)
+
+Каждый примитив имеет свой собственный «объект-обёртку», которые называются: String, Number, Boolean, Symbol и BigInt.
+Они имеют разный набор методов.
+
+```javascript
+let str = "Привет";
+alert(str.toUpperCase()); // ПРИВЕТ
+```
+
+1) Строка str – примитив. В момент обращения к его свойству, создаётся специальный объект
+2) Метод этого объекта запускается и возвращает значение
+3) Специальный объект удаляется, оставляя только примитив
+
+МЕТОДЫ ОБЪЕКТОВ-ОБЕРТОК ВСЕГДА ВОЗВРАЩАЮТ ПРИМИТИВЫ
+
+```javascript
+// ручное оборачивание
+console.log(typeof new String('jonas')); // object
+
+console.log(typeof new String('jonas').slice(1)); // string
+```
+
+# Strings
+
+## Methods indexOf() lastIndexOf()
+
+```javascript
+const airline = 'Ural Airlines';
+const plane = 'A321';
+
+// first occurence
+airline.indexOf('r'); // 1
+airline.indexOf('Airlines'); // 5
+// last occurence
+airline.lastIndexOf('r'); // 7
+
+// substring start, end(NON-INCLUSIVE)
+airline.slice(4); // ' Airlines'
+airline.slice(4, 7);
+' Ai'
+```
+
+## includes() and slice()
+
+```javascript
+const checkMiddleSeatIncludes = function (seat) {
+// B and E are middle seats
+    return seat.includes('B') || seat.includes('E');
+}
+
+const checkMiddleSeatSlice = function (seat) {
+    return (seat.slice(-1) === 'B' || seat.slice(-1) === 'E');
+}
+
+checkMiddleSeatIncludes('13B'); // true
+checkMiddleSeatIncludes('34C'); // false
+checkMiddleSeatIncludes('4E'); // true
+checkMiddleSeatSlice('13B'); // true
+checkMiddleSeatSlice('34C'); // false
+checkMiddleSeatSlice('4E'); // true
+
+```
+
+## toLowerCase() toUpperCase()
+
+```javascript
+// Fix capitalization in name
+const passenger = 'jOnAS';
+const fixName = (name) => {
+    let nameLower = name.toLowerCase();
+    return name[0].toUpperCase() + nameLower.slice(1);
+}
+console.log(fixName(passenger)); // Jonas
+```
+
+## toLowerCase() trim()
+
+```javascript
+// Comparing emails
+const email = 'hello@jonas.io';
+const loginEmail = '  Hello@Jonas.Io \n';
+const compareEmail = (email, loginEmail) => {
+    return email === loginEmail.trim().toLowerCase();
+}
+console.log(compareEmail(email, loginEmail)); // true
+```
+
+## replace() replaceAll()
+
+```javascript
+const announcement = 'All passengers come to boarding door 23. Boarding door 23!';
+
+// replaces only the 1st occurrence
+announcement.replace('door', 'gate');
+// All passengers come to boarding gate 23. Boarding door 23!
+
+// replaces all
+announcement.replace(/door/g, 'gate');
+announcement.replaceAll('door', 'gate');
+// All passengers come to boarding gate 23. Boarding gate 23!
+```
+
+## startsWith() endsWith() includes()
+
+```javascript
+if (plane.startsWith('Airbus') && plane.endsWith('neo')) {
+    console.log('Part of the NEW Airbus family');
+}
+```
+
+```javascript
+const checkBaggage = (input) => {
+    let normalizedInput = input.trim().toLowerCase();
+    return normalizedInput.includes('knife') || normalizedInput.includes('gun') ? 'Not allowed' : 'Allowed';
+}
+
+checkBaggage('   I have a laptop, some Food and a pocket Knife '); // true
+checkBaggage('Socks and camera.  '); // false
+checkBaggage(' Got some snacks and a gun for protection '); //true
+
+```
+
+## split() join()
+
+```javascript
+// destructuring
+let [a, b] = 'str1 str2'.split(' ');
+```
+
+```javascript
+const capitalizeReplace = (name) => {
+    let newName = name.split(' ').map(x => x.replace(x[0], x[0].toUpperCase())).join(' ');
+    return newName;
+}
+
+const capitalizeConcat = (name) => {
+    let newName = name.split(' ').map(x => x[0].toUpperCase() + x.slice(1)).join(' ');
+    return newName;
+}
+
+capitalizeReplace('jessica ann davis'); // Jessica Ann Davis
+capitalizeConcat('zhang duo'); // Zhang Duo
+```
+
+## padStart() padEnd()
+
+- Дополняет строку до заданной длины
+
+```javascript
+const message = 'Hello';
+message.padStart(10, '+').padEnd(15, '+');
+'Hi'.padStart(10, '+').padEnd(15, '+');
+// +++++Hello+++++
+// ++++++++Hi+++++
+```
+
+```javascript
+const maskCardNumber = (cardNumber) => {
+    const normalizedCardNumber = (cardNumber + '').trim().replaceAll(' ', '');
+    const last = normalizedCardNumber.slice(-4);
+// add * at the beginning
+// split into segments of 4 chars
+// destructure the array from match method
+// join elements --> new string
+    return [...last.padStart(normalizedCardNumber.length, '*').match(/.{1,4}/g)].join(' ');
+}
+
+maskCardNumber(4000001234567899); // **** **** **** 7899
+maskCardNumber('4000 0012 3456 7899'); // **** **** **** 7899
+maskCardNumber('4000001234567899'); // **** **** **** 7899
+maskCardNumber('40 0000 123456 7899'); // **** **** **** 7899
+```
+
+## repeat()
+
+```javascript
+const message2 = 'Bad weather...All Departures Delayed...';
+message2.repeat(5);
+
+// Bad weather...All Departures Delayed...Bad weather...All Departures Delayed...Bad weather...All Departures Delayed...Bad weather...All Departures Delayed...Bad weather...All Departures Delayed...
+```
+
+
