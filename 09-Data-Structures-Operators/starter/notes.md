@@ -952,4 +952,11 @@ message2.repeat(5);
 // Bad weather...All Departures Delayed...Bad weather...All Departures Delayed...Bad weather...All Departures Delayed...Bad weather...All Departures Delayed...Bad weather...All Departures Delayed...
 ```
 
+## Regex
+
+```javascript
+// Uppercase letters
+code.toUpperCase().match(/[A-Z]/g).join('');
+```
+
 
