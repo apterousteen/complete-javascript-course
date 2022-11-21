@@ -959,4 +959,102 @@ message2.repeat(5);
 code.toUpperCase().match(/[A-Z]/g).join('');
 ```
 
+# Default parameters in functions
+
+```javascript
+const bookings = [];
+
+const createBooking = (flightNum, numPassengers = 1, price = 100 * numPassengers) => {
+
+    const booking = {
+        flightNum,
+        numPassengers,
+        price,
+    };
+
+    bookings.push(booking);
+    return booking;
+}
+
+createBooking('A11'); // { flightNum: 'A11', numPassengers: 1, price: 100 }
+createBooking('A11', 2); // { flightNum: 'A11', numPassengers: 2, price: 200 }
+createBooking('A11', undefined, 800); // { flightNum: 'A11', numPassengers: 1, price: 800 }
+```
+
+# Function parameters
+
+- primitives are passed by value, objects are passed by reference
+- actually, in JS everything is passed by VALUE, for objects the value is a reference
+
+```javascript
+const flight = 'A11';
+const john = {
+    fullName: 'John Doe',
+    passport: 12345678,
+}
+
+const checkIn = (flightNum, passenger) => {
+    flightNum = 'A99';
+    passenger.fullName = 'Mr. ' + passenger.fullName;
+}
+
+checkIn(flight, john);
+//console.log(flight); // A11 - didn't change
+//console.log(john); // { fullName: 'Mr John Doe', passport: 12345678 } - changed!
+```
+
+# First-class functions & Higher-order functions
+
+- в JS есть функции первого класса - те, которые трактуются как объекты первого класса (могут быть переданы в качестве
+  аргументов),
+- И функции высшего порядка - принимающие в качестве аргументов или возвращающие другие функции
+
+## Higher-order function - функция высшего порядка, принимает callback-функцию
+
+```javascript
+const oneWord = function (str) {
+    return str.replaceAll(' ', '').toLowerCase();
+}
+
+const upperFirstWord = function (str) {
+    const [first, ...others] = str.split(' ');
+    return [first.toUpperCase(), ...others].join(' ');
+}
+
+const transformer = function (str, fn) {
+    console.log(`Original string: ${str}`);
+    console.log(`String after ${fn.name}: ${fn(str)}`);
+}
+
+transformer('JavaScript makes me scream', upperFirstWord);
+// Original string: JavaScript makes me scream
+// String after upperFirstWord: JAVASCRIPT makes me scream
+
+transformer('JavaScript makes me scream', oneWord);
+// Original string: JavaScript makes me scream
+// String after oneWord: javascriptmakesmescream
+```
+
+## Function returning another function
+
+```javascript
+
+// returns another function 
+const greet = function (greeting) {
+    return function (name) {
+        return `${greeting}, ${name}`;
+    }
+}
+
+const greetArrow = (greeting) => (name) => `${greeting}, ${name}`;
+
+greet('Hi'); // [Function (anonymous)]
+
+const sayHi = greet('Hi');
+
+sayHi('Paul'); // Hi, Paul
+greet('Hey')('Maria'); // Hey, Maria
+greetArrow('Hi')('Tom'); // Hi, Tom
+```
+
 
