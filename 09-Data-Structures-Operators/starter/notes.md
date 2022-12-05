@@ -1057,4 +1057,292 @@ greet('Hey')('Maria'); // Hey, Maria
 greetArrow('Hi')('Tom'); // Hi, Tom
 ```
 
+# Call method
 
+- Call - вызывает функцию, подменяя this
+
+```javascript
+// авиалиния
+const lufthansa = {
+    airline: 'Lufthansa',
+    iataCode: 'LH',
+    bookings: [],
+    book(flightNum, name) {
+        console.log(`${name} booked a seat on ${this.airline} flight ${this.iataCode}${flightNum}`);
+        this.bookings.push({flight: `${this.iataCode}${flightNum}`, name});
+    },
+};
+
+lufthansa.book(239, 'Jonas');
+//Jonas booked a seat on Lufthansa flight LH239
+lufthansa.book(635, 'John');
+//John booked a seat on Lufthansa flight LH635
+```
+
+```javascript
+// Новая авиалиния
+const eurowings = {
+    airline: 'Eurowings',
+    iataCode: 'EW',
+    bookings: [],
+};
+
+// новая функция брони
+const book = lufthansa.book;
+```
+
+- Не сработает, тк **this** - global
+
+```javascript
+book(23, 'Sarah Williams');
+// Cannot read properties of undefined (reading 'airline')
+```
+
+- с помощью call сработает, тк вручную указывается this
+
+```javascript
+book.call(eurowings, 23, 'Sarah');
+console.log(eurowings);
+/*
+Sarah booked a seat on Eurowings flight EW23
+
+{
+airline: 'Eurowings',
+iataCode: 'EW',
+bookings: [ { flight: 'EW23', name: 'Sarah' } ]
+}
+
+*/
+
+book.call(lufthansa, 239, 'Mary');
+console.log(lufthansa);
+/*
+Mary booked a seat on Lufthansa flight LH239
+
+{
+airline: 'Lufthansa',
+iataCode: 'LH',
+bookings: [
+{ flight: 'LH239', name: 'Jonas' },
+{ flight: 'LH635', name: 'John' },
+{ flight: 'LH239', name: 'Mary Cooper' }
+],
+book: [Function: book]
+}
+
+*/
+```
+
+# Apply method
+
+- делает то же, что и call, но принимает массив
+
+```javascript
+const flightData = [583, 'George'];
+book.apply(swiss, flightData);
+console.log(swiss);
+
+/*
+George booked a seat on Swiss Air Lines flight LX583
+{
+airline: 'Swiss Air Lines',
+iataCode: 'LX',
+bookings: [
+{ flight: 'LX583', name: 'Mary' },
+{ flight: 'LX583', name: 'George' }
+]
+}
+*/
+```
+
+- нет смысла юзать apply, когда можно сделать так
+
+```javascript
+book.call(swiss, ...flightData);
+```
+
+# Bind
+
+- создаёт "обёртку" над функцией. Поведение похоже на call и apply, но bind не вызывает функцию, а лишь возвращает "
+  обёртку", которую можно вызвать позже.
+
+```javascript
+// Новые функции с подмененным this
+const bookEW = book.bind(eurowings);
+const bookLH = book.bind(lufthansa);
+const bookLX = book.bind(swiss);
+
+bookEW(23, 'Steven Williams');
+//Steven Williams booked a seat on Eurowings flight EW23
+```
+
+# Partial application - частичное применение
+
+- когда части аргументов изначально назначены какие-то значения
+
+```javascript
+// сразу установлены this и flight number
+const bookEW23 = book.bind(eurowings, 23);
+bookEW23('Jonas Schmedtmann');
+bookEW23('Martha Cooper');
+// Jonas Schmedtmann booked a seat on Eurowings flight EW23
+// Martha Cooper booked a seat on Eurowings flight EW23
+```
+
+```javascript
+// функция считает цену с налогом
+const addTax = (rate, value) => value + value * rate;
+console.log(addTax(0.1, 200));
+```
+
+```javascript
+// считает цену с определенным налогом (предустановлено value = 0.23)
+// вместо this = null
+const addVAT = addTax.bind(null, 0.23);
+
+// то же самое как написать новую ф-цию:
+// addVAT = value => value + value * 0.23;
+```
+
+```javascript
+// Можно переписать без bind как функцию, которая возвращает другую
+const addTaxRate = function (rate) {
+    return function (value) {
+        return value + value * rate;
+    };
+};
+const addVAT2 = addTaxRate(0.23);
+```
+
+## Bind in Event Listeners
+
+```javascript
+lufthansa.planes = 300;
+lufthansa.buyPlane = function () {
+    console.log(this);
+
+    this.planes++;
+    console.log(this.planes);
+
+};
+
+lufthansa.buyPlane();
+// сработает, тк вызывается от lufthansa -> this = lufthansa
+
+document.querySelector('.buy')
+    .addEventListener('click', lufthansa.buyPlane.bind(lufthansa));
+// в eventListener без bind не сработает, тк this = document.querySelector('.buy')
+// не call, а bind, тк call вызывает, а нам надо передать как аргумент
+```
+
+# IIFE [ИФИ] - Immediately Invoked Function Expression
+
+- Моментально вызываемая функция.
+- Используется для создания ограниченной области видимости, но сейчас для этого есть блоки между {}
+
+```javascript
+// Оборачиваем в скобки, чтобы не было ошибки
+// Вызываем с помощью ()
+(function () {
+    console.log('This will never run again');
+    const isPrivate = 23;
+})();
+
+console.log(isPrivate);
+// ReferenceError: isPrivate is not defined
+```
+
+```javascript
+// Стрелочная IIFE
+(() => console.log('This will ALSO never run again'))();
+```
+
+## Блоки кода
+
+```javascript
+{
+    const isPrivate = 23;
+    var notPrivate = 46;
+}
+console.log(isPrivate); // ReferenceError: isPrivate is not defined
+console.log(notPrivate); // 46, тк у var нет блочной области видимости
+```
+
+# Closures - замыкания
+
+- Функция имеет доступ к переменным области, где была создана
+- Движок ищет переменную сначала в месте создания, и уже потом в цепи областей видимости
+
+```javascript
+// booker имеет доступ к passengerCount
+const secureBooking = function () {
+    let passengerCount = 0;
+
+    return function () {
+        passengerCount++;
+        console.log(`${passengerCount} passengers`);
+    };
+};
+
+const booker = secureBooking();
+
+booker(); // 1
+booker(); // 2
+booker(); // 3
+```
+
+```javascript
+// замыкания можно увидеть так, closure (secureBooking)
+console.dir(booker);
+```
+
+![img_3.png](img_3.png)
+
+## Замыкания с заранее созданной переменной
+
+```javascript
+// Имеет доступ к переменным там, где было присвоение функции
+let f;
+
+const g = function () {
+    const a = 23;
+    f = function () {
+        console.log(a * 2);
+    };
+};
+
+const h = function () {
+    const b = 700;
+    f = function () {
+        console.log(b * 2);
+    };
+};
+
+g();
+f();
+// 46
+
+// Re-assigning f function
+h();
+f();
+// 1400
+```
+
+## Замыкания в SetTimeout
+
+```javascript
+// Таймер
+// Set timeout выполнится уже после окончания выполнения функции boardPassengers, так что тут работает замыкание
+const boardPassengers = function (n, wait) {
+    const perGroup = n / 3;
+
+    setTimeout(function () {
+        console.log(`We are now boarding all ${n} passengers`);
+        console.log(`There are 3 groups, each with ${perGroup} passengers`);
+    }, wait * 1000);
+
+    console.log(`Will start boarding in ${wait} seconds`);
+};
+
+boardPassengers(180, 3);
+```
