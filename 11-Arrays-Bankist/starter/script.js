@@ -1,76 +1,171 @@
-'use strict';
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// BANKIST APP
-
-// Data
-const account1 = {
-  owner: 'Jonas Schmedtmann',
-  movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
-  interestRate: 1.2, // %
-  pin: 1111,
-};
-
-const account2 = {
-  owner: 'Jessica Davis',
-  movements: [5000, 3400, -150, -790, -3210, -1000, 8500, -30],
-  interestRate: 1.5,
-  pin: 2222,
-};
-
-const account3 = {
-  owner: 'Steven Thomas Williams',
-  movements: [200, -200, 340, -300, -20, 50, 400, -460],
-  interestRate: 0.7,
-  pin: 3333,
-};
-
-const account4 = {
-  owner: 'Sarah Smith',
-  movements: [430, 1000, 700, 50, 90],
-  interestRate: 1,
-  pin: 4444,
-};
-
-const accounts = [account1, account2, account3, account4];
-
-// Elements
-const labelWelcome = document.querySelector('.welcome');
-const labelDate = document.querySelector('.date');
-const labelBalance = document.querySelector('.balance__value');
-const labelSumIn = document.querySelector('.summary__value--in');
-const labelSumOut = document.querySelector('.summary__value--out');
-const labelSumInterest = document.querySelector('.summary__value--interest');
-const labelTimer = document.querySelector('.timer');
-
-const containerApp = document.querySelector('.app');
-const containerMovements = document.querySelector('.movements');
-
-const btnLogin = document.querySelector('.login__btn');
-const btnTransfer = document.querySelector('.form__btn--transfer');
-const btnLoan = document.querySelector('.form__btn--loan');
-const btnClose = document.querySelector('.form__btn--close');
-const btnSort = document.querySelector('.btn--sort');
-
-const inputLoginUsername = document.querySelector('.login__input--user');
-const inputLoginPin = document.querySelector('.login__input--pin');
-const inputTransferTo = document.querySelector('.form__input--to');
-const inputTransferAmount = document.querySelector('.form__input--amount');
-const inputLoanAmount = document.querySelector('.form__input--loan-amount');
-const inputCloseUsername = document.querySelector('.form__input--user');
-const inputClosePin = document.querySelector('.form__input--pin');
-
+/*
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
+let movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// MAP method
+let movementsEuroToUsd = movements.map(mov => mov * 1.2);
 
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
+let movementDescription = movements.map((mov, i) => {
+    if (mov > 0)
+        return `${i + 1}: Deposited ${mov}`;
+    else
+        return `${i + 1}: Withdrew ${Math.abs(mov)}`;
+});
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// console.log(movementDescription);
 
-/////////////////////////////////////////////////
+// FILTER method
+let deposits = movements.filter(x => x > 0);
+// console.log(deposits);
+
+let withdrawals = movements.filter(x => x < 0);
+// console.log(withdrawals);
+
+// REDUCE method (accumulator, current, index, array) => acc + cur, initialValue
+let balance = movements.reduce((acc, cur, i, arr) => acc + cur, 0);
+// console.log(balance);
+
+// max value
+let max = movements.reduce((max, curMax) => {
+    if (max < curMax)
+        return curMax
+    else
+        return max;
+}, movements[0]);
+// console.log(max);
+
+
+// take deposits, convert to USD, calc balance
+let totalDeposits = movements
+    .filter(mov => mov > 0)
+    .map(mov => mov * 1.2)
+    .reduce((acc, mov) => acc + mov, 0);
+// console.log(totalDeposits);
+
+// FIND method
+// возвращает ПЕРВЫЙ удовлетворяющий условию
+let firstWithdrawal = movements
+    .find(x => x < 0);
+// console.log(firstWithdrawal);
+
+const accountJD = accounts.find(x => x.owner === 'Jessica Davis');
+// console.log(accountJD);
+
+// FINDINDEX
+// возвращает ПЕРВЫЙ индекс удовлетворяющего условию элемента ИЛИ -1
+// в отличие от indexOf принимает не значение, а выражение
+let firstWithdrawalIndex = movements
+    .findIndex(x => x < 0);
+// console.log(firstWithdrawalIndex);
+
+// SOME ans EVERY
+// includes проверяет по значению, SOME проверяет по условию
+// console.log(movements);
+// console.log(movements.includes(200)); // true
+
+const anyMovementsAbove5000 = movements.some(x => x > 5000);
+// console.log(anyMovementsAbove5000); // false
+
+// EVERY возвращает true только если все элементы удовлетворяют условию
+// console.log(movements.every(x => x > 0)); // false
+
+// Separate Callback
+const deposit = (x) => x > 0;
+
+movements.every(deposit); // false
+movements.some(deposit); // true
+movements.filter(deposit); // [200, 450, 3000, 70, 1300]
+
+// flat and flatMap
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+// console.log(arr.flat()); // [1, 2, 3, 4, 5, 6, 7, 8]
+
+const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+// console.log(arrDeep.flat(2)); // [1, 2, 3, 4, 5, 6, 7, 8]
+
+// flat
+const overalBalance = accounts
+    .map(acc => acc.movements)
+    .flat()
+    .reduce((acc, mov) => acc + mov, 0);
+// console.log(overalBalance);
+
+// flatMap
+const overalBalance2 = accounts
+    .flatMap(acc => acc.movements)
+    .reduce((acc, mov) => acc + mov, 0);
+// console.log(overalBalance2);
+
+// Sorting Arrays
+
+// Strings
+const owners = ['Jonas', 'Zach', 'Adam', 'Martha'];
+// console.log(owners.sort());
+// console.log(owners);
+
+// Numbers - sort сортирует всё как строки, то есть в зависимости от кода символа
+// console.log(`movs ${movements}`);
+// movements.sort();
+
+// return < 0, A, B (keep order)
+// return > 0, B, A (switch order)
+
+// Ascending
+// movements.sort((a, b) => {
+//   if (a > b) return 1;
+//   if (a < b) return -1;
+// });
+account1.movements.sort((a, b) => a - b);
+// console.log(account1.movements);
+
+// Descending
+// movements.sort((a, b) => {
+//   if (a > b) return -1;
+//   if (a < b) return 1;
+// });
+account1.movements.sort((a, b) => b - a);
+// console.log(account1.movements);
+*/
+
+// Creating and filling array
+
+/*
+// Empty arrays + fill
+let arr = new Array(7);
+console.log(arr);
+// На таком массиве не работает заполнение через map
+// console.log(arr.map(() => 5));
+// Работает как слайс 3 - начальный индекс, 5 - конец, не включительно
+arr.fill(1, 2, 4);
+console.log(arr);
+
+// Not empty array + fill
+let notEmptyArr = [1, 2, 3, 4, 5, 6, 7];
+notEmptyArr.fill(2);
+console.log(notEmptyArr);
+
+// Array.from()
+console.log(Array.from('ass'));
+
+// массив из 7 единиц
+const y = Array.from({length: 7}, () => 1);
+console.log(y);
+
+// массив от 1 до 7
+const z = Array.from({length: 7}, (_, i) => i + 1);
+console.log(z);
+
+// массив из массивоподобных структур
+let balanceVal = document.querySelector('.balance__value');
+balanceVal.addEventListener('click', () => {
+    const movementsUI = Array.from(document.querySelectorAll('.movements__value'),
+        el => +el.textContent.slice(0, -1));
+    console.log(movementsUI);
+})
+
+// можно сначала сделать массив, потом уже менять его с помощью map
+const movementsUI = [...document.querySelectorAll('.movements__value')];
+movementsUI.map(el => +el.textContent.slice(0, -1));
+*/
+

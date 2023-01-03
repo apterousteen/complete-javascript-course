@@ -1346,3 +1346,190 @@ const boardPassengers = function (n, wait) {
 
 boardPassengers(180, 3);
 ```
+
+# Array Methods
+
+## SLICE
+
+- подмассив без мутации исходного массива
+
+```javascript
+let arr = ['a', 'b', 'c', 'd', 'e'];
+
+arr.slice(2); // [ 'c', 'd', 'e' ]
+arr.slice(0, 2); // [ 'a', 'b' ]
+arr.slice(-2); // [ 'd', 'e' ]
+arr.slice(1, -1); // [ 'b', 'c', 'd' ]
+```
+
+```javascript
+// В обоих случаях создается неглубокая копия массива [ 'a', 'b', 'c', 'd', 'e' ]
+arr.slice();
+[...arr];
+```
+
+## SPLICE
+
+- возвращает подмассив, мутирует массив - удаляет подмассив
+
+```javascript
+arr = ['a', 'b', 'c', 'd', 'e'];
+arr.splice(1, 2); // [ 'b', 'c' ]
+arr; // [ 'a', 'd', 'e' ]
+```
+
+```javascript
+arr.splice(-1); // [ 'e' ] - удаление последнего элемента
+arr; // [ 'a', 'b', 'c', 'd' ]
+```
+
+## CONCAT
+
+- конкатенация массивов, не мутирует массивы
+
+```javascript
+arr = ['a', 'b', 'c', 'd', 'e'];
+let arr2 = ['f', 'g', 'h'];
+let arr3 = arr.concat(arr2, ['1', '2']);
+
+console.log(arr3);
+// [ 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', '1', '2' ]
+```
+
+```javascript
+// тот же самый эффект достигается spread оператором
+console.log([...arr, ...arr2, ...['1', '2']]);
+```
+
+## REVERSE
+
+- переворачивает, мутирует массив
+
+```javascript
+arr.reverse();
+console.log(arr); // [ 'e', 'd', 'c', 'b', 'a' ]
+```  
+
+## JOIN
+
+- массив --> строка с сепаратором
+
+```javascript
+console.log(arr.join(' - '))
+// e - d - c - b - a
+```  
+
+## AT
+
+```javascript
+let numArr = [11, 22, 33];
+console.log(numArr.at(1)); // 22
+
+// последний элемент массива
+console.log(numArr[numArr.length - 1]); // по длине
+console.log(numArr.slice(-1)[0]); // новый массив с 1 элементом
+console.log(numArr.at(-1)); // современный метод at
+```
+
+# for of vs forEach
+
+## for of
+
+```javascript
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+for (const [i, el] of movements.entries()) {
+    if (el > 0)
+        console.log(`${i + 1}: Deposited ${el}`);
+    else
+        console.log(`${i + 1}: Withdrew ${Math.abs(el)}`);
+}
+```
+
+## forEach
+
+- 1 параметр элемент, 2 - индекс, 3 - массив
+- нельзя прервать или пропустить итерацию
+
+```javascript
+movements.forEach((el, index, array) => {
+    if (el > 0)
+        console.log(`${index + 1}: Deposited ${el}`);
+    else
+        console.log(`${index + 1}: Withdrew ${Math.abs(el)}`);
+})
+```
+
+```javascript
+/*
+1: Deposited 200
+2: Deposited 450
+3: Withdrew 400
+4: Deposited 3000
+5: Withdrew 650
+6: Withdrew 130
+7: Deposited 70
+8: Deposited 1300
+*/
+```
+
+# for of, forEach with Maps
+
+```javascript
+const currencies = new Map([
+    ['USD', 'United States dollar'],
+    ['EUR', 'Euro'],
+    ['GBP', 'Pound sterling'],
+]);
+
+/* OUTPUT
+
+USD - United States dollar
+EUR - Euro
+GBP - Pound sterling
+*/
+```
+
+## for of with Maps
+
+```javascript
+for (const [key, val] of currencies) {
+    console.log(`${key} - ${val}`);
+}
+```
+
+## forEach with Maps
+
+- 1 - значение, 2 - ключ, 3 - словарь
+
+```javascript
+currencies.forEach((value, key, map) => {
+    console.log(`${key} - ${value}`);
+})
+```
+
+# forEach with Sets
+
+- 1 - значение, 2 - тоже значение (нет ключей / индексов), 3 - Set
+
+```javascript
+const uniqueCurrencies = new Set(['USD', 'EUR', 'USD', 'GBP', 'EUR']);
+
+uniqueCurrencies.forEach((value, key, set) => {
+    console.log(`${key} - ${value}`);
+})
+
+/* OUTPUT
+USD - USD
+EUR - EUR
+GBP - GBP
+ */
+```
+
+# Map, Filter, Reduce
+
+![img_5.png](img_5.png)
+
+# which array method to use?
+
+![img_6.png](img_6.png)
