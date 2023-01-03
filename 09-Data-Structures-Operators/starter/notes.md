@@ -1530,6 +1530,291 @@ GBP - GBP
 
 ![img_5.png](img_5.png)
 
-# which array method to use?
+# Which array method to use?
 
 ![img_6.png](img_6.png)
+
+# Map
+
+- (val, i, arr) => new []
+
+```javascript
+let movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+let movementDescription = movements.map((mov, i) => {
+    if (mov > 0)
+        return `${i + 1}: Deposited ${mov}`;
+    else
+        return `${i + 1}: Withdrew ${Math.abs(mov)}`;
+});
+console.log(movementDescription);
+
+/*
+[
+  '1: Deposited 200',
+  '2: Deposited 450',
+  '3: Withdrew 400',
+  '4: Deposited 3000',
+  '5: Withdrew 650',
+  '6: Withdrew 130',
+  '7: Deposited 70',
+  '8: Deposited 1300'
+]
+ */
+```
+
+# Filter
+
+- (val, i, arr) => new []
+
+```javascript
+let deposits = movements.filter(x => x > 0);
+console.log(deposits); // [ 200, 450, 3000, 70, 1300 ]
+
+let withdrawals = movements.filter(x => x < 0);
+console.log(withdrawals); // [ -400, -650, -130 ]
+```
+
+# Reduce
+
+- (accumulator, current, i, arr) => acc + cur, initialValue
+
+```javascript
+let movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+let balance = movements.reduce((acc, cur) => acc + cur, 0);
+console.log(balance); // 3840
+
+// max value with Reduce
+let max = movements.reduce((max, curMax) => {
+    if (max < curMax)
+        return curMax
+    else
+        return max;
+}, movements[0]);
+console.log(max); // 3000
+```
+
+# Find
+
+- (val, i, arr) => val || undefined
+- возвращает ПЕРВЫЙ удовлетворяющий условию
+
+```javascript
+let firstWithdrawal = movements
+    .find(x => x < 0);
+console.log(firstWithdrawal); // -400
+
+const accountJD = accounts.find(x => x.owner === 'Jessica Davis');
+console.log(accountJD); // вернет 1-й объект с нужным owner
+```
+
+# Findindex
+
+- возвращает ПЕРВЫЙ индекс удовлетворяющего условию элемента ИЛИ -1
+- в отличие от indexOf принимает не значение, а выражение
+
+```javascript
+let movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+let firstWithdrawalIndex = movements
+    .findIndex(x => x < 0);
+console.log(firstWithdrawalIndex); // 2
+```
+
+# SOME
+
+- хотя бы 1 элемент удовлетворяет условию
+- includes проверяет по значению, SOME проверяет по условию
+
+```javascript
+console.log(movements.includes(200)); // true
+
+const anyMovementsAbove5000 = movements.some(x => x > 5000);
+console.log(anyMovementsAbove5000); // false
+```
+
+# EVERY
+
+- все элементы удовлетворяют условию
+
+```javascript
+console.log(movements.every(x => x > 0)); // false
+```
+
+# Separate callback in methods
+
+- можно передавать отдельную функцию
+
+```javascript
+const deposit = (x) => x > 0;
+
+movements.every(deposit); // false
+movements.some(deposit); // true
+movements.filter(deposit); // [200, 450, 3000, 70, 1300]
+```
+
+# flat and flatMap
+
+- убирает вложенность массива
+- принимает глубину, если неизвестна, то flat(Infinity)
+
+```javascript
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+console.log(arr.flat()); // [1, 2, 3, 4, 5, 6, 7, 8]
+
+const arrDeep = [[[1, 2], 3], [4, [5, 6]], 7, 8];
+console.log(arrDeep.flat(2)); // [1, 2, 3, 4, 5, 6, 7, 8]
+```
+
+## flat
+
+```javascript
+const overalBalance = accounts
+    .map(acc => acc.movements) // получаем массив массивов
+    .flat() // избавляемся от вложенности
+    .reduce((acc, mov) => acc + mov, 0); // считаем сумму
+```
+
+## flatMap
+
+```javascript
+const overalBalance2 = accounts
+    .flatMap(acc => acc.movements) // получаем массив массивов без вложенности
+    .reduce((acc, mov) => acc + mov, 0);
+```
+
+# Sort
+
+- сортирует ВСЁ как строки - в зависимости от кода символа
+- МУТИРУЕТ исходный массив
+
+## Strings
+
+```javascript
+const owners = ['Jonas', 'Zach', 'Adam', 'Martha'];
+console.log(owners.sort()); // [ 'Adam', 'Jonas', 'Martha', 'Zach' ]
+```
+
+## Numbers
+
+```javascript
+let movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+console.log(movements.sort()); // [ -130, -400, -650, 1300, 200, 3000, 450, 70 ]
+```
+
+- return < 0, A, B (keep order)
+- return > 0, B, A (switch order)
+
+```javascript
+// Ascending - По возрастанию
+movements.sort((a, b) => a - b);
+
+// Descending - По убыванию
+movements.sort((a, b) => b - a);
+```
+
+# Creating and filling array
+
+## Empty array + fill
+
+```javascript
+let arr = new Array(7);
+console.log(arr); // [ <7 empty items> ]
+
+// На пустом массиве не работает заполнение через map
+console.log(arr.map(() => 5)); // [ <7 empty items> ]
+
+// fill работает как slice 2 - начальный индекс, 4 - конец, не включительно
+arr.fill(1, 2, 4);
+console.log(arr); // [ <2 empty items>, 1, 1, <3 empty items> ]
+```
+
+## Not empty array + fill
+
+```javascript
+let notEmptyArr = [1, 2, 3, 4, 5, 6, 7];
+notEmptyArr.fill(2);
+console.log(notEmptyArr); // [ 2, 2, 2, 2, 2, 2, 2 ]
+```
+
+# Array.from()
+
+- принимает либо итерируемый объект, либо длину + map
+
+```javascript
+console.log(Array.from('ass')); // [ 'a', 's', 's' ]
+
+// массив из 7 единиц
+const y = Array.from({length: 7}, () => 1);
+console.log(y);
+
+// массив от 1 до 7
+const z = Array.from({length: 7}, (_, i) => i + 1);
+console.log(z);
+```
+
+# Массив из массивоподобных структур
+
+```javascript
+let balanceVal = document.querySelector('.balance__value');
+
+balanceVal.addEventListener('click', () => {
+    const movementsUI = Array.from(
+        document.querySelectorAll('.movements__value'), // из чего массив
+        el => +el.textContent.slice(0, -1)); // map
+    console.log(movementsUI);
+})
+
+// можно сначала сделать массив, потом уже менять его с помощью map
+const movementsUI = [...document.querySelectorAll('.movements__value')];
+movementsUI.map(el => +el.textContent.slice(0, -1));
+```
+
+# Array methods practice
+
+```javascript
+// 1
+let bankDepositTotal = accounts.flatMap(acc => acc.movements.filter(x => x > 0)).reduce((sum, x) => sum + x, 0);
+// console.log(bankDepositTotal);
+
+// 2 - how many deposits here with at least 1000
+let numDeposits1000 = accounts.flatMap(acc => acc.movements.filter(x => x >= 1000)).length;
+console.log(numDeposits1000)
+
+// 2 - how many deposits here with at least 1000
+// x++ внутри тернарного оператора не работает, только ++x
+let numDeposits10002 = accounts.flatMap(acc => acc.movements)
+    .reduce((count, x) => x >= 1000 ? ++count : count, 0);
+console.log(numDeposits10002)
+
+// 3 - sums of deposits and withdrawals
+let sums = accounts
+    .flatMap(acc => acc.movements)
+    .reduce((sums, x) => {
+        x > 0 ? sums.deposits += x : sums.withdrawals += x;
+        return sums;
+    }, {deposits: 0, withdrawals: 0});
+console.log(sums);
+
+let {deposits, withdrawals} = accounts
+    .flatMap(acc => acc.movements)
+    .reduce((sums, x) => {
+        sums[x > 0 ? 'deposits' : 'withdrawals'] += x;
+        return sums;
+    }, {deposits: 0, withdrawals: 0});
+console.log(deposits, withdrawals);
+
+// 4 - title case?
+const exceptions = ['the', 'a', 'and', 'an', 'as', 'but', 'for', 'if', 'nor', 'or', 'so', 'yet'];
+
+const toTitleCase = (str) => {
+    return str.toLowerCase().split(' ').map((word, i, arr) =>
+        exceptions.includes(word) && i !== 0 && i !== arr.length - 1
+            ? word
+            : word[0].toUpperCase() + word.slice(1))
+        .join(' ');
+};
+console.log(toTitleCase('this is a nice title'));
+console.log(toTitleCase('this is a LONG title but not too long'));
+console.log(toTitleCase('and here is another title with an EXAMPLE and'));
+```
