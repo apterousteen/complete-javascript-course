@@ -1818,3 +1818,257 @@ console.log(toTitleCase('this is a nice title'));
 console.log(toTitleCase('this is a LONG title but not too long'));
 console.log(toTitleCase('and here is another title with an EXAMPLE and'));
 ```
+
+# Numbers
+
+- Всегда представлены как double
+- Дроби в двоичной системе бывают бесконечными
+- Можно избежать потери точности с помощью деления или toFixed
+- toFixed возвращает СТРОКУ
+
+## Потеря точности
+
+```javascript
+console.log(0.1 + 0.2 == 0.3); // false
+console.log(0.1 + 0.2); // 0.30000000000000004
+
+let sum = 0.1 + 0.2;
+alert(+sum.toFixed(2)); // 0.3
+```
+
+## Parsing
+
+```javascript
+console.log(Number.parseInt('30px')); // 30
+console.log(Number.parseInt('px30')); // NaN
+console.log(Number.parseFloat('3.5px')); // 3.5
+console.log(Number.parseFloat('px30.1')); // NaN
+```
+
+## Проверка на число
+
+- тип number
+- не NaN (сам по себе number)
+- не +-Infinity
+
+```javascript
+typeof a === 'number' && !Number.isNaN(a);
+```
+
+Можно заменить на Number.isFinite или isInteger
+
+```javascript
+// Checking if value is number
+console.log('ssss')
+console.log(Number.isFinite(20)); // true
+console.log(Number.isFinite('20')); // false
+console.log(Number.isFinite(+'20X')); // false, because NaN
+console.log(Number.isFinite(23 / 0)); // false, because Infinity
+
+// Checking if value is integer
+console.log(Number.isInteger(23)); // true
+console.log(Number.isInteger(23.0)); // true
+console.log(Number.isInteger(23 / 0)); // false
+```
+
+## Проверка именно на NaN
+
+```javascript
+// Checking if value is NaN
+console.log(Number.isNaN(20)); // false
+console.log(Number.isNaN('20')); // false
+console.log(Number.isNaN(+'20X')); // true
+console.log(Number.isNaN(23 / 0)); // false, because Infinity
+```
+
+- Методы Number.isNaN и Number.isFinite – это более «строгие» версии функций isNaN и isFinite. Они не преобразуют
+  аргумент в число, первым делом проверяют, принадлежит ли он к типу number.
+
+# Random numbers - Рандомные числа
+
+```javascript
+// random number from 1 to 6
+let number = Math.trunc(Math.random() * 6) + 1;
+
+// random integer
+const randomInt = (min, max) =>
+    Math.floor(Math.random() * (max - min) + 1) + min;
+```
+
+# Округление чисел
+
+- Все методы конвертируют в число!
+
+![img_8.png](img_8.png)
+
+## num.toFixed()
+
+- возвращает строку
+
+```javascript
+// перед вызовом метода, нужно обернуть число в () - boxing
+console.log(+(12.3456).toFixed(2)); // 12.35
+```
+
+# The Remainder Operator - Остаток от деления
+
+```javascript
+console.log(15 % 4) // 3 
+// тк 15 = 4 * 3 + 3
+
+console.log(-15 % 4) // -3 
+// тк -15 = 4 * -3 - 3 
+// в математике будет 1 (остаток всегда >= 0)
+// тк -15 = 4 * -4 + 1
+
+console.log(15 % -4) // 3 
+// тк 15 = -4 * -3 + 3
+
+console.log(-15 % -4) // -3 
+// тк -15 = -4 * 3 - 3 
+// в математике будет 1 
+// тк -15 = -4 * 4 + 1)
+```
+
+# Покрасить каждую 2 строку в оранжевый, каждую 3 - в синий
+
+```javascript
+labelBalance.addEventListener('click', () => {
+    [...document.querySelectorAll('.movements__row')]
+        .forEach((row, i) => {
+// 0, 2, 4, 6
+            if (i % 2 === 0) row.style.backgroundColor = 'orangered';
+// 0, 3, 6, 9
+            if (i % 3 === 0) row.style.backgroundColor = 'blue';
+        });
+});
+```
+
+# Короткая запись чисел
+
+## нижнее подчеркивание (underscore) _
+
+- ТОЛЬКО между числами (не в начале, не в конце)
+- если конвертировать из строки, выдает NaN
+
+```javascript
+let largeNumber = 1_000_000;
+console.log(+'1_000') // NaN
+```
+
+## буква e
+
+```javascript
+let largeNumber = 1e6; // 1 000 000
+let smallNumber = 1e-3; // 0,001
+```
+
+# BinInt
+
+- нельзя мешать с другими типами
+- можно при + для конкатенации и сравнении
+
+```javascript
+let bigInteger = 123456789876543245654323454134321n;
+let bigInteger = BigInt(123456789876543245654323454134321);
+```
+
+![img_9.png](img_9.png)
+![img_10.png](img_10.png)
+
+# Arguments in functions in event listeners
+
+1. call a function inside an anonymous function (worse practice)
+
+```javascript
+const changeNavOpacity = (e, opacity) => {
+    if (!e.target.classList.contains('nav__link')) return;
+
+    // select all links, not navItems
+    const siblings = [...navLinksContainer.querySelectorAll('.nav__link')];
+    siblings.forEach(link => {
+        if (link !== e.target && !link.classList.contains('nav__link--btn'))
+            link.style.opacity = opacity;
+    });
+};
+
+
+navLinksContainer.addEventListener('mouseover', function (e) {
+    changeNavOpacity(e, 0.5);
+});
+```
+
+2. pass an argument to the function using bind (better practice)
+   На самом деле, нельзя более одного аргумента передавать, поэтому используем this
+
+!! у стрелочных функций нет своего this, они берут его из родительской функции, поэтому bind не работает
+
+```javascript
+const changeNavOpacity = function (e) {
+    console.log(this);
+    if (!e.target.classList.contains('nav__link')) return;
+
+    // select all links, not navItems
+    const siblings = [...navLinksContainer.querySelectorAll('.nav__link')];
+    siblings.forEach(link => {
+        if (link !== e.target && !link.classList.contains('nav__link--btn'))
+            link.style.opacity = this;
+    });
+};
+
+navLinksContainer.addEventListener('mouseout', changeNavOpacity.bind(null, 1));
+```
+
+# Sticky nav bar
+
+```javascript
+// Sticky navigation
+// Запоминаем координаты от начала страницы до 1 секции
+// Такая реализация негативно влияет на производительность, тк каждый раз при скролле будет запрашиваться координата
+const initialCoords = section1.getBoundingClientRect();
+console.log(initialCoords);
+window.addEventListener('scroll', () => {
+    if (window.scrollY > initialCoords.top)
+        nav.classList.add('sticky');
+    else
+        nav.classList.remove('sticky');
+});
+```
+
+# Жизненный цикл страницы
+
+У жизненного цикла HTML-страницы есть три важных события:
+
+- **DOMContentLoaded** – браузер полностью загрузил HTML, было построено DOM-дерево, но внешние ресурсы, такие как
+  картинки <img> и стили, могут быть ещё не загружены.
+- **load** – браузер загрузил HTML и внешние ресурсы (картинки, стили и т.д.).
+- **beforeunload/unload** – пользователь покидает страницу.
+  Каждое из этих событий может быть полезно:
+
+Событие **DOMContentLoaded** – DOM готов, так что обработчик может искать DOM-узлы и инициализировать интерфейс.
+
+Событие **load** – внешние ресурсы были загружены, стили применены, размеры картинок известны и т.д.
+
+Событие **beforeunload** – пользователь покидает страницу. Мы можем проверить, сохранил ли он изменения и спросить, на
+самом ли деле он хочет уйти.
+
+Событие **unload** – пользователь почти ушёл, но мы всё ещё можем запустить некоторые операции, например, отправить
+статистику.
+
+Все эти события можно отловить с помощью eventListener
+
+```javascript
+// То же самое, что $(document).ready в JQuery
+document.addEventListener("DOMContentLoaded", function () {
+    console.log('DOM-tree is built');
+});
+```
+
+# Defer, async and default scrips
+
+- Лучше всего использовать defer в head, чтобы скрипты подгружались вместе с HTML
+- async можно использовать для скриптов, для которых не важен порядок выполнения, например, для аналитики
+- Классические скрипты в конце body можно использовать, если важна поддержка старых браузеров
+
+![img_11.png](img_11.png)
+![img_12.png](img_12.png)
