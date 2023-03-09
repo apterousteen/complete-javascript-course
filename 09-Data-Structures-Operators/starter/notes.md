@@ -2072,3 +2072,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 ![img_11.png](img_11.png)
 ![img_12.png](img_12.png)
+
+# ООП термины
+
+Инкапсуляция - отделение внутренних интерфейсов от внешних (сокрытие)
+
+# Прототипное наследование
+
+![img_13.png](img_13.png)
+
+# Классы
+
+![img_14.png](img_14.png)
+
