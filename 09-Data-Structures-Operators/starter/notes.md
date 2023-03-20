@@ -2070,6 +2070,8 @@ document.addEventListener("DOMContentLoaded", function () {
 - async можно использовать для скриптов, для которых не важен порядок выполнения, например, для аналитики
 - Классические скрипты в конце body можно использовать, если важна поддержка старых браузеров
 
+- Скрипы ниже имеют доступ ко всем глобальным переменным скриптов выше
+
 ![img_11.png](img_11.png)
 ![img_12.png](img_12.png)
 
@@ -2084,4 +2086,3 @@ document.addEventListener("DOMContentLoaded", function () {
 # Классы
 
 ![img_14.png](img_14.png)
-
