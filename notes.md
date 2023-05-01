@@ -767,7 +767,7 @@ console.log([...question.values()]);
 
 # Choosing a data structure
 
-![img_2.png](img_2.png)
+![img_2.png](09-Data-Structures-Operators/starter/img_2.png)
 
 # Boxing (Упаковка)
 
@@ -1163,7 +1163,7 @@ book.call(swiss, ...flightData);
 
 # Bind
 
-- создаёт "обёртку" над функцией. Поведение похоже на call и apply, но bind не вызывает функцию, а лишь возвращает "
+- создаёт "обёртку" над функцией. Поведение похоже на call и apply, но bind не вызывает функцию, а лишь возвращает"
   обёртку", которую можно вызвать позже.
 
 ```javascript
@@ -1296,7 +1296,7 @@ booker(); // 3
 console.dir(booker);
 ```
 
-![img_3.png](img_3.png)
+![img_3.png](09-Data-Structures-Operators/starter/img_3.png)
 
 ## Замыкания с заранее созданной переменной
 
@@ -1528,11 +1528,11 @@ GBP - GBP
 
 # Map, Filter, Reduce
 
-![img_5.png](img_5.png)
+![img_5.png](09-Data-Structures-Operators/starter/img_5.png)
 
 # Which array method to use?
 
-![img_6.png](img_6.png)
+![img_6.png](09-Data-Structures-Operators/starter/img_6.png)
 
 # Map
 
@@ -1899,7 +1899,7 @@ const randomInt = (min, max) =>
 
 - Все методы конвертируют в число!
 
-![img_8.png](img_8.png)
+![img_8.png](09-Data-Structures-Operators/starter/img_8.png)
 
 ## num.toFixed()
 
@@ -1973,8 +1973,8 @@ let bigInteger = 123456789876543245654323454134321n;
 let bigInteger = BigInt(123456789876543245654323454134321);
 ```
 
-![img_9.png](img_9.png)
-![img_10.png](img_10.png)
+![img_9.png](09-Data-Structures-Operators/starter/img_9.png)
+![img_10.png](09-Data-Structures-Operators/starter/img_10.png)
 
 # Arguments in functions in event listeners
 
@@ -2040,7 +2040,7 @@ window.addEventListener('scroll', () => {
 У жизненного цикла HTML-страницы есть три важных события:
 
 - **DOMContentLoaded** – браузер полностью загрузил HTML, было построено DOM-дерево, но внешние ресурсы, такие как
-  картинки <img> и стили, могут быть ещё не загружены.
+  картинки img и стили, могут быть ещё не загружены.
 - **load** – браузер загрузил HTML и внешние ресурсы (картинки, стили и т.д.).
 - **beforeunload/unload** – пользователь покидает страницу.
   Каждое из этих событий может быть полезно:
@@ -2072,8 +2072,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 - Скрипы ниже имеют доступ ко всем глобальным переменным скриптов выше
 
-![img_11.png](img_11.png)
-![img_12.png](img_12.png)
+![img_11.png](09-Data-Structures-Operators/starter/img_11.png)
+![img_12.png](09-Data-Structures-Operators/starter/img_12.png)
 
 # ООП термины
 
@@ -2081,8 +2081,389 @@ document.addEventListener("DOMContentLoaded", function () {
 
 # Прототипное наследование
 
-![img_13.png](img_13.png)
+![img_13.png](09-Data-Structures-Operators/starter/img_13.png)
 
 # Классы
 
-![img_14.png](img_14.png)
+![img_14.png](09-Data-Structures-Operators/starter/img_14.png)
+
+# Асинхронный JS
+
+## Асинхронность при добавлении src
+
+- добавление пути к изображению - это асинхронная операция, тк фото надо загрузить
+- событие конца загрузки - load
+
+![img_1.png](img_1.png)
+
+## XMLHttpRequest
+
+1) создать пустой запрос
+2) открыть запрос
+3) отправить запрос
+4) обработать ответ
+
+```javascript
+const request = new XMLHttpRequest();
+request.open('GET', `https://restcountries.com/v3.1/name/${countryName}`);
+request.send();
+request.addEventListener('load', () => {
+    const [data] = JSON.parse(request.responseText);
+    console.log(data);
+});
+```
+
+## Callback hell
+
+Глубоко вложенные коллбек-функции, вызываемые последовательно
+
+- При создании цепочек запросов с помощью XMLHttpRequest
+- При вложенных таймерах
+- При вложенных eventListener'ах
+
+```javascript
+setTimeout(() => {
+    console.log('1 second passed');
+    setTimeout(() => {
+        console.log('2 seconds passed');
+        setTimeout(() => {
+            console.log('3 second passed');
+            setTimeout(() => {
+                console.log('4 second passed');
+            }, 1000);
+        }, 1000);
+    }, 1000);
+}, 1000);
+```
+
+## Promises
+
+Промис - объект-заглушка для результатов отложенных и асинхронных действий.
+
+Плюсы промисов:
+
+- не нужно использовать ивенты
+- можно вызывать друг за другом без вложенности
+
+### Жизненный цикл промиса
+
+Промис обрабатывается только 1 раз, после этого состояние не меняется
+
+1) Pending - В ожидании (начальное состояние, не исполнен и не отклонён)
+2) Settled - Решен
+    - Fulfilled - Выполнено успешно (при вызове обработчика **resolve**)
+    - Rejected - Выполнено с ошибкой (при вызове обработчика **reject**)
+
+![img_2.png](img_2.png)
+
+### then()
+
+Всегда возвращает промис, значение в return обрабатывается как успешное
+
+```javascript
+const getCountryDataSimple = (countryName) => {
+    // запрос через API, fetch() возвращает промис
+    fetch(`https://restcountries.com/v3.1/name/${countryName}`)
+        // выполнится, когда от API придет ответ
+        // response.json() – парсит ответ в формате JSON, ТОЖЕ ВОЗВРАЩАЕТ промис
+        .then(response => response.json())
+
+        // выполнится, когда JSON распарсится
+        .then(data => {
+            renderCountry(data[0]);
+            const neighbour = data[0].borders?.at(0) || null;
+            if (!neighbour) return;
+
+            // второй запрос на основании первого
+            return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+        })
+        // выполнится, когда от API придет 2 ответ
+        .then(response => response.json())
+
+        // выполнится, когда 2 JSON распарсится
+        .then(dataNeighbour => renderCountry(dataNeighbour[0], 'neighbour'));
+};
+```
+
+### Error handling - Обработка ошибок
+
+Есть 2 способа обработки:
+
+1) передать вторую функцию в then(), но лучше так не делать
+    ```javascript
+    fetch().then(
+        response => response.json(),
+        err => alert(err)) // TypeError: Failed to fetch
+    ```
+
+   Сообщения об ошибках от сервера отлавливаются в then()
+
+    - Нужно посмотреть статус ответа в объекте ответа и кинуть ошибку вручную, тогда она отловится с помощью catch()
+
+    ```javascript
+        fetch().then(response => {
+            if (!response.ok)
+                throw new Error(`Country not found (${response.status})`);
+        
+            return response.json();
+        })
+    ```
+
+2) catch()
+
+   Ошибка - это объект, можно получить текст ошибки так:
+    ```javascript
+    fetch().catch(err => {
+                console.error(`❗${err}`);
+                renderError(`❗Something went wrong: ${err.message}. Try again!`);
+            })
+    ```
+
+finally() вызывается в любом случае
+
+Самый частый сценарий использования — работа с индикаторами загрузки
+
+# Event Loop
+
+Так-то JS однопоточный
+
+1) Весь синхронный код
+2) Микротаски
+3) 1 Макротаска
+
+![img_4.png](img_4.png)
+![img_3.png](img_3.png)
+
+# async/await
+
+- синтаксический сахар для классического .then
+
+- async делает функцию асинхронной, те функция будет работать на фоне, а когда исполнение закончится, вернет промис
+- await пишется перед промисом внутри async ф-ции, и он ждет результат этого промиса
+- await блокирует выполнение кода ВНУТРИ асинхронной ф-ции, так что основной поток тормозиться не будет
+
+- можно результат промиса сохранять в переменной, не добавляя в код коллбеки
+
+```javascript
+const whereAmI = async function () {
+    // fetch(`https://restcountries.com/v3.1/name/${country}`)
+    //     .then(responseCountry => console.log(responseCountry));
+
+    // Geolocation
+    const position = await getGeolocationPromiseSimple();
+    let {latitude, longitude} = position.coords;
+
+    // Reverse geocoding
+    const responseGeo = await fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json&auth=566423760144526357706x56778`);
+    const dataGeo = await responseGeo.json();
+
+    // Country Data
+    const responseCountry = await fetch(`https://restcountries.com/v3.1/name/${dataGeo.country}`);
+    const dataCountry = await responseCountry.json();
+    renderCountry(dataCountry[0]);
+    console.log('Rest Countries API');
+    console.log(responseCountry);
+    console.log(dataCountry[0]);
+
+    countriesContainer.style.opacity = '1';
+};
+```
+
+# try...catch
+
+- используется для обработки ошибок, например в async/await
+- чтобы обработать ошибку в catch, нужно сгенерить ее в try
+
+```javascript
+try {
+    // Geolocation
+    const position = await getGeolocationPromiseSimple();
+    let {latitude, longitude} = position.coords;
+
+    // Reverse geocoding
+    const responseGeo = await fetch(`https://geocode.xyz/${latitude},${longitude}?geoit=json&auth=566423760144526357706x56778`);
+
+    if (!responseGeo.ok)
+        throw new Error(`Geo API Error (${responseGeo.status})`);
+} catch (e) {
+
+}
+```
+
+# Promise Combinators - Комбинаторы Промисов
+
+## Promise.all([])
+
+- принимает iterable
+- запросы идут одновременно
+- разрешится, когда все промисы вернутся
+
+```javascript
+const get3Capitals = async function (c1, c2, c3) {
+    try {
+        // запросы идут друг за другом
+        const [data1] = await getJSON(`https://restcountries.com/v3.1/name/${c1}`, 'Country API Error');
+        const [data2] = await getJSON(`https://restcountries.com/v3.1/name/${c2}`, 'Country API Error');
+        const [data3] = await getJSON(`https://restcountries.com/v3.1/name/${c3}`, 'Country API Error');
+
+        console.log([data1.capital[0], data2.capital[0], data3.capital[0]]);
+    } catch (e) {
+        console.error(e.message);
+    }
+};
+```
+
+```javascript
+const get3Capitals = async function (c1, c2, c3) {
+    try {
+        // запросы идут одновременно
+        const data = await Promise.all([
+            getJSON(`https://restcountries.com/v3.1/name/${c1}`, 'Country API Error'),
+            getJSON(`https://restcountries.com/v3.1/name/${c2}`, 'Country API Error'),
+            getJSON(`https://restcountries.com/v3.1/name/${c3}`, 'Country API Error'),
+        ]);
+
+        console.log(data.map(d => d[0].capital[0]));
+    } catch (e) {
+        console.error(e.message);
+    }
+};
+```
+
+## Promise.race([])
+
+- принимает iterable
+- запросы идут одновременно
+- возвращает первый завершенный промис
+
+```javascript
+(async function (c1, c2, c3) {
+    const data = await Promise.race([
+        getJSON(`https://restcountries.com/v3.1/name/${c1}`, 'Country API Error'),
+        getJSON(`https://restcountries.com/v3.1/name/${c2}`, 'Country API Error'),
+        getJSON(`https://restcountries.com/v3.1/name/${c3}`, 'Country API Error'),
+    ]);
+
+    console.log(data[0].capital[0]);
+})('USA', 'Thailand', 'Russia');
+```
+
+- Полезен для того, чтобы задать таймаут
+
+```javascript
+const timeout = (seconds) => {
+    return new Promise((_, reject) => {
+        setTimeout(() => {
+            reject(new Error('Timeout Error'));
+        }, seconds * 1000)
+    });
+};
+
+Promise.race([
+    getJSON(`https://restcountries.com/v3.1/name/italy`, 'Country API Error'),
+    getJSON(`https://restcountries.com/v3.1/name/japan`, 'Country API Error'),
+    getJSON(`https://restcountries.com/v3.1/name/poland`, 'Country API Error'),
+    timeout(1),
+])
+    .then(res => console.log(res[0].capital[0]))
+    .catch(err => console.error(err.message));
+```
+
+## Promise.allSettled([])
+
+- принимает iterable
+- запросы идут одновременно
+- возвращает массив результатов промисов
+- В отличие от Promise.all, не останавливается, если какой-то промис отклонен
+
+```javascript
+Promise.allSettled([
+    Promise.resolve('Success'),
+    Promise.reject('Error'),
+    Promise.resolve('Success'),
+])
+    .then(res => console.log(res)) // res - массив результатов промисов
+    .catch(err => console.error(err.message));
+```
+
+## Promise.any([])
+
+- принимает iterable
+- запросы идут одновременно
+- возвращает первый положительный результат
+
+```javascript
+Promise.any([
+    Promise.reject('Error'),
+    Promise.resolve('Success1'),
+    Promise.resolve('Success2'),
+])
+    .then(res => console.log(res)); // res - Success1
+```
+
+## Таймеры с помощью промисов
+
+```javascript
+// таймер в цикле с помощью async/await
+
+const sleep2 = (sec) => new Promise(resolve => setTimeout(resolve, sec * 1000))
+
+async function loopTimer() {
+    for (let i = 0; i < 3; i++) {
+        console.log(i);
+        await sleep2(3000);
+    }
+}
+
+loopTimer();
+```
+
+```javascript
+// Таймер с помощью промисификации setTimeout
+const sleep = (seconds) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, seconds * 1000);
+    });
+};
+//
+sleep(5)
+    .then(() => {
+        // сюда код после ожидания в 5 секунд
+        console.log('5 seconds passed');
+
+        // можно остановиться, а можно еще один таймер запустить
+        return sleep(2);
+    })
+    .then(() => {
+        // сюда код после ожидания в 5 + 2 секунды
+        console.log('7 seconds passed')
+    });
+```
+
+```javascript
+// то же самое с помощью вложенных таймаутов
+
+setTimeout(() => {
+// сюда код после ожидания в 5 секунд
+    console.log('5 seconds passed');
+
+    // можно остановиться, а можно еще один таймер запустить
+    setTimeout(() => {
+        // сюда код после ожидания в 5 + 2 секунды
+        console.log('7 seconds passed')
+    }, 2000)
+}, 5000)
+
+```
+
+```javascript
+// таймаут (удобно использоваться с Promise.race)
+
+const timeout = (seconds) => {
+    return new Promise((_, reject) => {
+        setTimeout(() => {
+            reject(new Error('Timeout Error'));
+        }, seconds * 1000)
+    });
+};
+```
