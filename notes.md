@@ -2467,3 +2467,377 @@ const timeout = (seconds) => {
     });
 };
 ```
+
+# Modules - Модули
+
+Чтобы объявить скрипт модулем в HTML, надо добавить type="module":
+
+```html
+
+<script type="module" defer src="./script.js"></script>
+```
+
+## Difference between modules and scripts
+
+![img_5.png](img_5.png)
+
+## Process of importing modules
+
+- Все импорты происходят по время парсинга, ДО запуска кода
+- Импорт и экспорт возможен только ВНУТРИ модуля, а не обычного скрипта
+
+1. Парсится скрипт, внутри которого импорты
+2. Асинхронно с сервера грузятся импортированные файлы
+3. Привязка переменных
+4. Запускаются импортированные файлы
+5. Запускается скрипт, внутри которого импорты
+
+![img_6.png](img_6.png)
+
+## Named imports and exports
+
+Именованные экспорты удобны при экспорте нескольких составляющих
+
+```javascript
+import './shoppingCart.js'; // импорт всего файла
+import {addToCart} from './shoppingCart.js'; // именованный импорт функции
+import {addToCart, totalPrice, totalQuantity} from './shoppingCart.js';
+import {totalPrice as price} from './shoppingCart.js'; // смена имени переменной в импорте
+```
+
+```javascript
+// импорт всех экспортов
+import * as ShoppingCart from './shoppingCart.js';
+
+console.log('Importing module');
+ShoppingCart.addToCart('apple', 2);
+console.log(ShoppingCart.tq, ShoppingCart.totalPrice);
+```
+
+- Экспорты должны находиться в глобальном контексте (не внутри других блоков)
+
+Экспорт функции
+
+```javascript
+export const addToCart = (product, amount) => {
+    cart.push({product, amount});
+    console.log(`${amount} ${product} added to cart`);
+};
+```
+
+Экспорт нескольких переменных
+
+```javascript
+const totalPrice = 200;
+const totalQuantity = 23;
+
+export {totalPrice, totalQuantity};
+```
+
+Экспорт со сменой имени
+
+```javascript
+export {totalQuantity as tq}
+```
+
+## Default Exports and Imports
+
+Дефолтные экспорты используются, когда нужна только 1 вещь из модуля
+
+```javascript
+export default addToCart;
+
+// или прям функцию без переменной
+export default (product, quantity) => {
+    cart.push({product, quantity});
+    console.log(`${quantity} ${product} added to cart`);
+    console.log(cart);
+};
+```
+
+```javascript
+import add from './shoppingCart.js';
+
+add('cheese', 1);
+```
+
+## Top-level await
+
+В модулях можно использовать await вне async
+
+! НО это блокирует исполнение всего модуля
+
+Вместе с этим задерживается исполнение модулей, зависящих от этого модуля
+
+```javascript
+// вне функции
+const res = await fetch('https://jsonplaceholder.typicode.com/users');
+const data = await res.json();
+
+// внутри функции
+const getLastPost = async () => {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await res.json();
+    return data.at(-1);
+}
+```
+
+## The Module Pattern
+
+- Этот паттерн устарел, тк есть классы и модули
+
+```javascript
+// IIFE, тк нужно вызвать сразу и один раз
+const ShoppingCart2 = (function () {
+    const cart = [];
+    const shippingCost = 10;
+    const totalPrice = 237;
+    const totalQuantity = 23;
+
+    const addToCart = function (product, quantity) {
+        cart.push({product, quantity});
+        console.log(
+            `${quantity} ${product} added to cart (sipping cost is ${shippingCost})`
+        );
+    };
+
+    const orderStock = function (product, quantity) {
+        console.log(`${quantity} ${product} ordered from supplier`);
+    };
+
+    // возвращаем и сохраняем публичные методы и переменные в виде объекта
+    return {
+        addToCart,
+        cart,
+        totalPrice,
+        totalQuantity,
+    };
+})();
+
+// Доступ к невозвращаемым переменным, например, к массиву cart сохраняется за счет замыкания
+// Функция имеет доступ к переменным области, где была создана
+ShoppingCart2.addToCart('apple', 4);
+ShoppingCart2.addToCart('pizza', 2);
+console.log(ShoppingCart2); // объект, где ключи - это
+// addToCart, cart, totalPrice, totalQuantity,
+console.log(ShoppingCart2.shippingCost); // undefined, тк функция не возвращает shippingCost
+```
+
+## CommonJS Modules (only) in Node
+
+```javascript
+// экспорт в node
+exports.addToCart = function (product, quantity) {
+    cart.push({product, quantity});
+    console.log(
+        `${quantity} ${product} added to cart`
+    );
+};
+
+// импорт в node 
+const shoppingCart = require('./shoppingCart.js');
+```
+
+## Command Line Basics
+
+```shell
+dir - directory - shows all files 
+cd - change directory
+.. - вверх по дереву
+../.. - 2 раза вверх по дереву
+clear - clear the console
+mkdir - make directory - new folder 
+cd . > index.html - create one file
+ni file.js, file1.js - create multiple files
+start index.html - open file
+del - delete
+mv .\index.html ../ - move to parent folder
+```
+
+## package.json and dependencies
+
+Для создания json файла нужно:
+
+```shell
+npm -v #проверить наличие npm
+npm init #инициализировать проект
+```
+
+Далее задать все необходимые значения по инструкции
+Появится новый файл package.json
+Далее устанавливаем зависимости (в примере либа leaflet)
+
+```shell
+npm install leaflet
+#или
+npm i leaflet
+```
+
+Внутри package.json появится
+
+```json
+{
+  "dependencies": {
+    "leaflet": "^1.9.4"
+  }
+}
+```
+
+Внутри директории появится папка node_modules, в которой хранятся все зависимости
+
+### Работа с зависимостями
+
+_!! Папку node_modules всегда надо кидать в gitignore, чтобы не раздувать размер проекта_
+
+Чтобы восстановить все зависимости из package.json, нужно. Тогда появится папка node_modules
+
+```shell
+npm i 
+```
+
+_!! Без сборщика проектов (бандлера) не получится пользоваться библиотеками, которые используют CommonJS модули_
+
+### Пример на библиотеке lodash
+
+Скачаем либу, сделанную на ES6 модулях
+
+```shell
+npm i lodash-es
+```
+
+```javascript
+// испортируем метод
+import cloneDeep from 'lodash-es';
+
+// изначальный объект
+let state = {
+    cart: [
+        {product: 'apple', quantity: 5},
+        {product: 'milk', quantity: 3},
+    ],
+    user: {
+        loggedIn: true,
+        name: 'Jonas',
+    },
+}
+
+// клонируем объект с помощью js
+// const stateClone = Object.assign({}, state);
+// console.log(stateClone); // но это будет не глубокий клон (deep clone), вложенные свойства все еще ссылаются на первый объект
+
+// клонируем с помощью lodash
+const stateDeepClone = cloneDeep(state);
+state.user.loggedIn = false; // меняем глубокое свойство
+console.log(state); // тут loggedIn: false
+console.log(stateDeepClone); // тут loggedIn: true
+```
+
+## Parsel bundler
+
+Чтобы скачать parsel в проект. Флаг --save-dev означает, что зависимость используется в процессе разработки. Такие
+зависимости попадают в package.json в
+
+```shell
+npm i parcel --save-dev
+```
+
+```json
+{
+  "devDependencies": {
+    "parcel": "^2.9.3"
+  }
+}
+```
+
+Чтобы запустить локально установленный parcel, необходимо вызвать команду npx
+index.html - это точка входа
+
+```shell
+npx parcel index.html
+```
+
+Будет создана папка dist (distribution), которая и пойдет в прод. В папке сформирован скрипт, содержащий код от самого
+parcel и все самописные модули
+
+Второй способ запуска локальных зависимостей - это npm scripts, которые хранятся в package.json. Написанные здесь
+команды будут работать даже без npx
+
+```json
+{
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  }
+}
+```
+
+Для вызова скрипта нужно
+
+```shell
+npm run start
+```
+
+Добавим такой же скрипт для финального билда
+
+```shell
+npm run build
+```
+
+После сборки в папке dist появится сокращенный html и обфусцированный js
+
+## Транспилирование и полифилы
+
+Parcel использует транспилер Babel.
+
+Суть транспиляции это конвертация кода на одном языке в код на другом или в код более раней версии языка.
+
+Полифилы добавляют функционал(методы, объекты), которые могут отсутствовать в ранних реализациях.
+
+В Babel есть плагины и пресеты.
+Плагины позволяют транспилировать определенные составляющие языка, например, только стрелочные функции или только
+классы.
+
+Пресеты - это шаблон, в котором собрано несколько плагинов.
+
+Для того чтобы добавить полифилы, необходимы библиотеки core-js (для всего) и regenerator-runtime (для асинхронных
+фукнций)
+
+```shell
+npm i core-js
+npm i regenerator-runtime
+```
+
+```javascript
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+```
+
+## Hot Module Replacement
+
+Hot Module Replacement (HMR) меняет модули, не перезагружая страницу полностью, это ускоряет процесс разработки, тк
+сохраняется состояние страницы
+
+```javascript
+if (module.hot) {
+    module.hot.accept();
+}
+```
+
+# Принципы функционального / декларативного программирования
+
+1) Иммутабельность (нужно пытаться писать чистые функции)
+
+- Чтобы сделать объект неизменяемым, нужно обернуть его в Object.freeze
+
+```javascript
+const spendingLimits = Object.freeze({
+    jonas: 1500,
+    matilda: 100,
+});
+```
+
+Однако заморозка не глубокая, мы все еще можем менять объекты внутри замороженного объекта
+
+- Функция должна принимать все нужные значения в параметрах, а не искать их в других областях
+- Примерять методы, возвращающие новый объект (map, filter, reduce)
+- Работать с копиями объектов
