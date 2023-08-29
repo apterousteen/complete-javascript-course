@@ -108,6 +108,23 @@ const obj = {
 // number1 = 42, number2 = 24
 ```
 
+### conditionally add property
+
+Проверяем какое-то условие, если оно истинно, то возвращается объект, который мы деструктурируем и добавляем в
+изначальный объект
+
+```javascript
+const a = {
+    ...(someCondition && {b: 5})
+}
+
+const recipe = {
+    id: recipe.id,
+    title: recipe.title,
+    ...(recipe.key && {key: recipe.key}),
+}
+```
+
 ### nested object
 
 ```javascript
@@ -767,7 +784,7 @@ console.log([...question.values()]);
 
 # Choosing a data structure
 
-![img_2.png](09-Data-Structures-Operators/starter/img_2.png)
+![data_structures.png](notes_imgs/data_structures.png)
 
 # Boxing (Упаковка)
 
@@ -1296,7 +1313,7 @@ booker(); // 3
 console.dir(booker);
 ```
 
-![img_3.png](09-Data-Structures-Operators/starter/img_3.png)
+![closures.png](notes_imgs/closures.png)
 
 ## Замыкания с заранее созданной переменной
 
@@ -1528,11 +1545,11 @@ GBP - GBP
 
 # Map, Filter, Reduce
 
-![img_5.png](09-Data-Structures-Operators/starter/img_5.png)
+![img_5.png](notes_imgs/img_5.png)
 
 # Which array method to use?
 
-![img_6.png](09-Data-Structures-Operators/starter/img_6.png)
+![img_6.png](notes_imgs/img_6.png)
 
 # Map
 
@@ -1899,7 +1916,7 @@ const randomInt = (min, max) =>
 
 - Все методы конвертируют в число!
 
-![img_8.png](09-Data-Structures-Operators/starter/img_8.png)
+![img_8.png](notes_imgs/img_8.png)
 
 ## num.toFixed()
 
@@ -1973,8 +1990,15 @@ let bigInteger = 123456789876543245654323454134321n;
 let bigInteger = BigInt(123456789876543245654323454134321);
 ```
 
-![img_9.png](09-Data-Structures-Operators/starter/img_9.png)
-![img_10.png](09-Data-Structures-Operators/starter/img_10.png)
+# INTL
+
+Intl.DateTimeFormat
+Умеет форматировать дату и время в соответствии с нужным языком.
+![img_9.png](notes_imgs/img_9.png)
+
+Intl.NumberFormat
+Умеет форматировать числа в соответствии с нужным языком.
+![img_10.png](notes_imgs/img_10.png)
 
 # Arguments in functions in event listeners
 
@@ -2072,8 +2096,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 - Скрипы ниже имеют доступ ко всем глобальным переменным скриптов выше
 
-![img_11.png](09-Data-Structures-Operators/starter/img_11.png)
-![img_12.png](09-Data-Structures-Operators/starter/img_12.png)
+![img_11.png](notes_imgs/img_11.png)
+![img_12.png](notes_imgs/img_12.png)
 
 # ООП термины
 
@@ -2081,11 +2105,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 # Прототипное наследование
 
-![img_13.png](09-Data-Structures-Operators/starter/img_13.png)
+![img_13.png](notes_imgs/img_13.png)
 
 # Классы
 
-![img_14.png](09-Data-Structures-Operators/starter/img_14.png)
+![img_14.png](notes_imgs/img_14.png)
 
 # Асинхронный JS
 
@@ -2094,7 +2118,7 @@ document.addEventListener("DOMContentLoaded", function () {
 - добавление пути к изображению - это асинхронная операция, тк фото надо загрузить
 - событие конца загрузки - load
 
-![img_1.png](img_1.png)
+![img_1.png](notes_imgs/img_1.png)
 
 ## XMLHttpRequest
 
@@ -2154,7 +2178,7 @@ setTimeout(() => {
     - Fulfilled - Выполнено успешно (при вызове обработчика **resolve**)
     - Rejected - Выполнено с ошибкой (при вызове обработчика **reject**)
 
-![img_2.png](img_2.png)
+![img_2.png](notes_imgs/img_2.png)
 
 ### then()
 
@@ -2231,8 +2255,8 @@ finally() вызывается в любом случае
 2) Микротаски
 3) 1 Макротаска
 
-![img_4.png](img_4.png)
-![img_3.png](img_3.png)
+![img_4.png](notes_imgs/img_4.png)
+![img_3.png](notes_imgs/img_3.png)
 
 # async/await
 
@@ -2479,7 +2503,7 @@ const timeout = (seconds) => {
 
 ## Difference between modules and scripts
 
-![img_5.png](img_5.png)
+![modules_and_scripts.png](notes_imgs/modules_and_scripts.png)
 
 ## Process of importing modules
 
@@ -2492,7 +2516,7 @@ const timeout = (seconds) => {
 4. Запускаются импортированные файлы
 5. Запускается скрипт, внутри которого импорты
 
-![img_6.png](img_6.png)
+![module_import_process.png](notes_imgs/module_import_process.png)
 
 ## Named imports and exports
 
@@ -2512,6 +2536,11 @@ import * as ShoppingCart from './shoppingCart.js';
 console.log('Importing module');
 ShoppingCart.addToCart('apple', 2);
 console.log(ShoppingCart.tq, ShoppingCart.totalPrice);
+```
+
+```javascript
+// Чтобы наследоваться от класса в модуле, надо импортировать этот модуль
+import View from "./View";
 ```
 
 - Экспорты должны находиться в глобальном контексте (не внутри других блоков)
@@ -2732,9 +2761,10 @@ console.log(state); // тут loggedIn: false
 console.log(stateDeepClone); // тут loggedIn: true
 ```
 
-## Parsel bundler
+## Parсel bundler
 
-Чтобы скачать parsel в проект. Флаг --save-dev означает, что зависимость используется в процессе разработки. Такие
+Чтобы скачать parсel в проект. Флаг --save-dev (или -D) означает, что зависимость используется в процессе разработки.
+Такие
 зависимости попадают в package.json в
 
 ```shell
@@ -2823,6 +2853,18 @@ if (module.hot) {
 }
 ```
 
+## Импорт любых файлов
+
+Parcel позволяет импортировать любые ассеты, не только скрипты.
+
+```javascript
+// Импортируем иконки, которые рендерятся уже после сборки проекта.
+// Путь к иконкам указываем относительно скрипта, в котором импортируем
+// Используем либу Fracty для отображения дробей
+import icons from 'url:../../img/icons.svg';
+import fracty from 'fracty';
+```
+
 # Принципы функционального / декларативного программирования
 
 1) Иммутабельность (нужно пытаться писать чистые функции)
@@ -2841,3 +2883,339 @@ const spendingLimits = Object.freeze({
 - Функция должна принимать все нужные значения в параметрах, а не искать их в других областях
 - Примерять методы, возвращающие новый объект (map, filter, reduce)
 - Работать с копиями объектов
+
+# App architecture
+
+## Components of every architecture
+
+- business logic
+- state
+- http library
+- application logic (router)
+- presentation logic (UI layer)
+
+![img_7.png](notes_imgs/img_7.png)
+
+## MVC pattern
+
+MVC расшифровывается как «модель-представление-контроллер» (от англ. model-view-controller).
+Это способ организации кода, который предполагает выделение блоков, отвечающих за решение разных задач.
+
+Компоненты MVC:
+
+* Модель — этот компонент отвечает за данные, а также определяет структуру приложения. Например, если вы создаете To-Do
+  приложение, код компонента model будет определять список задач и отдельные задачи.
+* Представление — этот компонент отвечает за взаимодействие с пользователем. То есть код компонента view определяет
+  внешний вид приложения и способы его использования.
+* Контроллер — этот компонент отвечает за связь между model и view. Код компонента controller определяет, как сайт
+  реагирует на действия пользователя. По сути, это мозг MVC-приложения.
+
+![mvc.png](notes_imgs/mvc.png)
+
+Вызов функций и импорты происходят только в контроллере, модель экспортирует состояние
+
+# Debugger - Дебагер
+
+```javascript
+debugger;
+//запускает дебагер в браузере
+```
+
+# Процесс работы над проектом с Parcel:
+
+1) npm i - если в проекте уже есть зависимости
+2) npm init - создаем package.json
+3) скрипты в package.json для запуска и сборки
+    ```
+      "scripts": {
+        "start": "parcel index.html",
+        "build": "parcel build index.html --public-url ./"
+      },
+    ```
+4) npm i parcel -D - скачиваем parcel как dev dependency
+5) npm run start (или npm start) - запускаем сервер для разработки
+6) разрабатываем
+7) npm i core-js regenerator-runtime - устанавливаем полифилы
+8) импортируем полифилы в главный файл
+    ```
+    import 'core-js/stable';
+    import 'regenerator-runtime/runtime';
+    ```
+9) удалить папку с кэшем и папку dist
+10) npm run build - собираем проект
+
+__________________________
+
+# Организация проекта
+
+Файл config.js содержит константы, которые используются во всем коде
+
+```javascript
+const API_URL = 'https://forkify-api.herokuapp.com/api/v2/recipes/';
+const TIMEOUT_SEC = 6;
+const RESULTS_PER_PAGE = 10;
+const API_KEY = '7c9eae49-66a5-4040-9cdc-b380993ff7f6';
+
+export {API_URL, API_KEY, TIMEOUT_SEC, RESULTS_PER_PAGE};
+
+// в других файлах надо импортировать
+import {TIMEOUT_SEC} from "./config";
+```
+
+_______________________________
+
+Файл helpers.js содержит функции-помощники, используемые во всем проекте
+
+```javascript
+import {TIMEOUT_SEC} from "./config";
+
+const timeout = function (s) {
+    return new Promise(function (_, reject) {
+        setTimeout(function () {
+            reject(new Error(`Request took too long! Timeout after ${s} second`));
+        }, s * 1000);
+    });
+};
+
+/**
+ * Makes a GET request with and returns JSON from the response.
+ * @param {string} url - url for the request
+ */
+const getJSON = async (url) => {
+    try {
+        const fetchPromise = fetch(url);
+        const res = await Promise.race([fetchPromise, timeout(TIMEOUT_SEC)]);
+        const data = await res.json();
+
+        // handling errors
+        if (!res.ok)
+            throw new Error(`${data.message}\nstatus code: ${res.status}`);
+
+        return data;
+    } catch (err) {
+        // чтобы передать ошибку дальше
+        throw err;
+    }
+};
+
+/**
+ * Makes a POST request with a new recipe and returns JSON from the response.
+ * @param {string} url - url for the request
+ * @param {object} uploadData - new recipe object
+ */
+const sendJSON = async (url, uploadData) => {
+    try {
+        const fetchPromise = fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(uploadData),
+        });
+        const res = await Promise.race([fetchPromise, timeout(TIMEOUT_SEC)]);
+        const data = await res.json();
+
+        // handling errors
+        if (!res.ok)
+            throw new Error(`${data.message}\nstatus code: ${res.status}`);
+
+        return data;
+    } catch (err) {
+        // чтобы передать ошибку дальше
+        throw err;
+    }
+};
+
+export {getJSON, sendJSON};
+```
+
+_______________________________
+
+# Работа с Git
+
+## Начало работы:
+
+1) git init - создание репозитория
+2) git config --global user.name apterousteen - привязка аккаунта гх
+3) файл .gitignore
+    ```
+    node_modules
+    dist
+    .parcel-cache
+    ```
+4) git status - просмотреть коммиты и файлы
+
+## Внесение изменений:
+
+1) git add -A - добавить ВСЕ (-А) измененные файлы в индекс (начать отслеживать)
+2) git rm --cached <file-name> - убрать файл из индекса (перестать отслеживать)
+3) git commit -m 'message'
+
+## Откат изменений:
+
+1) git reset --hard HEAD - откат к предыдущему коммиту
+2) git log
+3) выбираем id нужного
+4) Q - выходим из логов
+5) git reset --hard <commit-ID> - к определенному коммиту
+
+## Перемещение между ветками:
+
+Добавлять новый функционал лучше в новой ветке
+
+1) git branch - посмотреть все ветки
+2) Q - выходим
+3) git branch <branch-name> - создать новую ветку
+4) git checkout <branch-name> - переход на ветку
+5) git add -A
+6) git commit -m 'message' - в новой ветке
+7) git branch master - переход в главную ветку
+8) git merge <branch-name> - слияние ветки с нынешней
+
+## Связка локального и нового удаленного репозитория
+
+1) Создаем репо в гх
+2) git remote add origin <link-to-repo>.git
+3) git push origin <branch-to-push>
+
+# Pub-Sub
+
+Publisher-Subscriber pattern - это подвид паттерна Observer
+Разница в том, что в Pub-Sub есть шина событий
+
+```javascript
+ // Publisher в pub-sub. 
+ // Добавляет callback для начала рендеринга при возникновении событий
+const addHandlerRender = function (handler) {
+    ['hashchange', 'load'].forEach(event => window.addEventListener(event, handler));
+}
+```
+
+```javascript
+// Subscribers в pub-sub. 
+// При запуске проекта подписываются на события, описанные в view
+// Функция init() вызывается сразу после загрузки модуля 
+const init = () => {
+    bookmarksView.addHandlerRender(controlLocalBookmarksRender);
+    recipeView.addHandlerRender(controlRecipes);
+    recipeView.addHandlerUpdateServings(controlServings);
+    recipeView.addHandlerBookmark(controlBookmarks);
+    searchView.addHandlerSearch(controlSearchResults);
+    paginationView.addHandlerClick(controlPagination);
+    addRecipeView.addHandlerUpload(controlAddRecipe);
+};
+
+init();
+```
+
+# Полезные кусочки кода из проекта Forkify
+
+POST-запрос с таймаутом
+
+```javascript
+const timeout = function (s) {
+    return new Promise(function (_, reject) {
+        setTimeout(function () {
+            reject(new Error(`Request took too long! Timeout after ${s} second`));
+        }, s * 1000);
+    });
+};
+
+const sendJSON = async (url, uploadData) => {
+    try {
+        const fetchPromise = fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(uploadData),
+        });
+        const res = await Promise.race([fetchPromise, timeout(TIMEOUT_SEC)]);
+        const data = await res.json();
+
+        if (!res.ok)
+            throw new Error(`${data.message}\nstatus code: ${res.status}`);
+
+        return data;
+    } catch (err) {
+        // чтобы передать ошибку дальше
+        throw err;
+    }
+};
+```
+
+_______
+
+Event hashchange - срабатывает при изменении хэша в url (#)
+
+Event load - срабатывает при загрузке страницы
+
+```javascript
+window.addEventListener('hashchange', () => {
+    const id = window.location.hash.slice(1);
+    if (id)
+        loadRecipe(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`);
+});
+
+['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipes));
+```
+
+```javascript
+// Поменять хэш в URL
+// pushState() не вызывает событие hashchange
+window.history.pushState(null, '', `#${model.state.recipe.id}`);
+```
+
+____________
+
+FormData это html-объект с данными из формы
+
+Данные можно достать либо засунув их в массив массивов, либо с помощью метода entries(), а затем преобразовать в
+js-объект
+
+```javascript
+// const data = [...new FormData(this)];
+const dataArr = new FormData(this).entries();
+const dataObj = Object.fromEntries(dataArr);
+```
+
+____________
+Метод позволяет выборочно рендерить новое содержимое, использует фрагменты документа - DocumentFragment
+
+```javascript
+const update = function (data) {
+    this._data = data;
+    const newMarkup = this._generateMarkup();
+
+    // Range(диапазон) интерфейс предоставляет фрагмент документа
+    // который может содержать узлы и части текстовых узлов данного документа.
+    // Range.createContextualFragment() method returns a DocumentFragment
+    // They exist in memory and you can construct them as usual, basically creating a micro virtual dom.
+    const newDOM = document.createRange().createContextualFragment(newMarkup);
+
+    // собираем все элементы из "виртуального" и настоящего DOM в массив
+    const newElements = Array.from(newDOM.querySelectorAll('*'));
+    const curElements = Array.from(this._parentElement.querySelectorAll('*'));
+
+    // Node.isEqualNode() проверяет, равны ли два узла.
+    newElements.forEach((newEl, i) => {
+        const curEl = curElements[i];
+
+        // Updates ONLY TEXT
+        // Если ноды разные, то меняем текстовое содержимое
+        // Свойство Node.nodeValue возвращает или устанавливает значение текущего узла.
+        // nodeValue != null, только если содержимое текст, у нас собраны атомарные элементы,
+        // так что текст может быть только первой нодой
+        if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== '') {
+            curEl.textContent = newEl.textContent;
+        }
+
+        // Updates ATTRIBUTES
+        // Если ноды разные, то создаем массив новых атрибутов и копируем каждый атрибут в старый html
+        if (!newEl.isEqualNode(curEl)) {
+            Array.from(newEl.attributes).forEach(attr =>
+                curEl.setAttribute(attr.name, attr.value));
+        }
+    });
+};
+```
